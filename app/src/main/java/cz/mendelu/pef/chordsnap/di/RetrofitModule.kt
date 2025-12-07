@@ -2,9 +2,6 @@ package cz.mendelu.pef.chordsnap.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import cz.mendelu.pef.chordsnap.BuildConfig
-import cz.mendelu.pef.chordsnap.communication.ChordsAPI
-import cz.mendelu.pef.chordsnap.communication.ChordsRemoteRepositoryImpl
-import cz.mendelu.pef.chordsnap.communication.IChordsRemoteRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +16,6 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-// GitHub Auth Interceptor
 class GitHubAuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = BuildConfig.GITHUB_TOKEN
@@ -38,7 +34,7 @@ class GitHubAuthInterceptor : Interceptor {
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+object RetrofitModule {
 
     @Provides
     @Singleton
@@ -51,18 +47,24 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().apply {
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(GitHubAuthInterceptor())
-            .addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    level = if (BuildConfig.DEBUG) {
-                        HttpLoggingInterceptor.Level.BODY
-                    } else {
-                        HttpLoggingInterceptor.Level.NONE
-                    }
-                }
-            )
+            .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .build()
@@ -81,19 +83,5 @@ object NetworkModule {
                 json.asConverterFactory("application/json".toMediaType())
             )
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideChordsAPI(retrofit: Retrofit): ChordsAPI {
-        return retrofit.create(ChordsAPI::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideChordsRemoteRepository(
-        chordsAPI: ChordsAPI
-    ): IChordsRemoteRepository {
-        return ChordsRemoteRepositoryImpl(chordsAPI)
     }
 }
