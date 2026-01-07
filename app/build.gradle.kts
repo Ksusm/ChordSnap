@@ -115,6 +115,12 @@ dependencies {
     // ML Kit
     implementation(libs.mlkit.text.recognition)
 
+    // CameraX
+    implementation(libs.camerax.core)
+    implementation(libs.camerax.camera2)
+    implementation(libs.camerax.lifecycle)
+    implementation(libs.camerax.view)
+
     // Google Maps
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
@@ -134,6 +140,4 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-
 }

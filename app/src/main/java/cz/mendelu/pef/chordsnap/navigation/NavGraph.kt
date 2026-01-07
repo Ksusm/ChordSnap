@@ -47,6 +47,11 @@ fun NavGraph(
             ScanScreen(
                 onNavigateBack = {
                     navController.popBackStack()
+                },
+                onChordRecognized = { chordId ->
+                    navController.navigate(Destination.ChordDetailScreen.createRoute(chordId)) {
+                        popUpTo(Destination.HomeScreen.route)
+                    }
                 }
             )
         }
