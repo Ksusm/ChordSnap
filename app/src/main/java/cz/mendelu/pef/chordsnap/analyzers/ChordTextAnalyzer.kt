@@ -44,6 +44,9 @@ class ChordTextAnalyzer(
                     val foundChord = findChordInText(allText)
                     if (foundChord != null) {
                         onChordDetected(foundChord)
+                    } else {
+                        // No chord found - notify with empty string
+                        onChordDetected("")
                     }
 
                     imageProxy.close()
@@ -97,7 +100,7 @@ class ChordTextAnalyzer(
     }
 
     private fun extractChordFromWord(word: String): String? {
-        if (word.length < 1 || word.length > 10) return null
+        if (word.isEmpty() || word.length > 10) return null
 
         val cleanWord = word.trim()
         if (cleanWord.isEmpty()) return null

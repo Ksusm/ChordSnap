@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 sealed class ScanUiState {
     object Idle : ScanUiState()
-    object Scanning : ScanUiState()
     object Processing : ScanUiState()
     data class Success(val chord: Chord) : ScanUiState()
     data class Error(val message: String) : ScanUiState()
@@ -51,6 +50,11 @@ class ScanScreenViewModel @Inject constructor(
     }
 
     fun searchChordByName(recognizedText: String) {
+        if (recognizedText.isBlank()) {
+            _uiState.value = ScanUiState.Error("No chord found. Please try again.")
+            return
+        }
+
         if (allChords.isEmpty()) {
             _uiState.value = ScanUiState.Error("Chord database not loaded yet")
             return
@@ -65,7 +69,7 @@ class ScanScreenViewModel @Inject constructor(
                 saveChordToDatabase(foundChord)
                 _uiState.value = ScanUiState.Success(foundChord)
             } else {
-                _uiState.value = ScanUiState.Error("Chord '$recognizedText' not found in database.")
+                _uiState.value = ScanUiState.Error("No chord found. Please try again.")
             }
         }
     }
@@ -87,23 +91,29 @@ class ScanScreenViewModel @Inject constructor(
             }
         }
 
-        chords.forEach { chord ->
-            val chordName = chord.name.eng.lowercase()
-            val searchText = cleanedText.lowercase()
-
-            if (searchText.contains(chordName) || chordName.contains(searchText)) {
-                return chord
-            }
-        }
-
         return null
     }
 
     private fun normalizeChordName(name: String): String {
-        var normalized = name.trim().replace(" ", "")
+        var normalized = name.trim()
 
-        normalized = normalized.replace(Regex("([A-G][b#]?)m$"), "$1 minor")
-        normalized = normalized.replace(Regex("([A-G][b#]?)M$"), "$1 major")
+        if (normalized.length == 1 && normalized.matches(Regex("[A-G]"))) {
+            return "$normalized major"
+        }
+
+        if (normalized.length == 2 && normalized.matches(Regex("[A-G][b#]"))) {
+            return "$normalized major"
+        }
+
+        if (normalized.matches(Regex("([A-G][b#]?)m"))) {
+            val note = normalized.dropLast(1)
+            return "$note minor"
+        }
+
+        if (normalized.matches(Regex("([A-G][b#]?)M"))) {
+            val note = normalized.dropLast(1)
+            return "$note major"
+        }
 
         return normalized
     }
@@ -112,6 +122,7 @@ class ScanScreenViewModel @Inject constructor(
         try {
             chordDao.insertAll(listOf(chord).toEntityList())
         } catch (e: Exception) {
+
         }
     }
 

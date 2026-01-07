@@ -119,11 +119,6 @@ fun ScanScreen(
                                 Icon(Icons.Default.CameraAlt, "Scan chord")
                             }
                         }
-                        is ScanUiState.Scanning -> {
-                            CircularProgressIndicator(color = Color.White)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text("Recognizing text...", color = Color.White)
-                        }
                         is ScanUiState.Processing -> {
                             CircularProgressIndicator(color = Color.White)
                             Spacer(modifier = Modifier.height(8.dp))
@@ -131,15 +126,22 @@ fun ScanScreen(
                         }
                         is ScanUiState.Error -> {
                             Text(
-                                (uiState as ScanUiState.Error).message,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.Red
+                                text = (uiState as ScanUiState.Error).message,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.error
                             )
 
-                            Button(
-                                onClick = { viewModel.resetState() }
+                            LaunchedEffect(Unit) {
+                                kotlinx.coroutines.delay(2000)
+                                viewModel.resetState()
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            FloatingActionButton(
+                                onClick = { analyzer?.triggerScan() }
                             ) {
-                                Text("Try Again")
+                                Icon(Icons.Default.CameraAlt, "Scan chord")
                             }
                         }
                         is ScanUiState.Success -> {
