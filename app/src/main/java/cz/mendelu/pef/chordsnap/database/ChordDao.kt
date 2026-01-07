@@ -14,4 +14,10 @@ interface ChordDao {
 
     @Query("SELECT COUNT(*) FROM chords")
     suspend fun count(): Int
+
+    @Delete
+    suspend fun deleteChords(chords: List<ChordEntity>)
+
+    @Query("DELETE FROM chords WHERE id IN (:chordIds)")
+    suspend fun deleteByIds(chordIds: List<String>)
 }
