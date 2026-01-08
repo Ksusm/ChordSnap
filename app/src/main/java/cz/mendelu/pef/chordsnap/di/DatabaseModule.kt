@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import cz.mendelu.pef.chordsnap.database.AppDatabase
 import cz.mendelu.pef.chordsnap.database.ChordDao
+import cz.mendelu.pef.chordsnap.database.PracticeDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +32,11 @@ object DatabaseModule {
     @Singleton
     fun provideChordDao(database: AppDatabase): ChordDao {
         return database.chordDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providePracticeDao(database: AppDatabase): PracticeDao {
+        return database.practiceDao()
     }
 }
