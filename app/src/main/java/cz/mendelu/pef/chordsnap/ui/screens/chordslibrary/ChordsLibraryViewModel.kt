@@ -81,8 +81,12 @@ class ChordsLibraryViewModel @Inject constructor(
                 chordDao.deleteByIds(_selectedChords.value.toList())
                 _selectedChords.value = emptySet()
             } catch (e: Exception) {
-                // Handle error
+
             }
         }
+    }
+
+    fun clearSelection() {
+        _selectedChords.value = emptySet()
     }
 }

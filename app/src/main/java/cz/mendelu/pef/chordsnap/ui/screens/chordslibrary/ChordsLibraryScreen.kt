@@ -33,6 +33,12 @@ fun ChordsLibraryScreen(
 
     var showFilterMenu by remember { mutableStateOf(false) }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.clearSelection()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
