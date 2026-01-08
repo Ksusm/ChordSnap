@@ -24,7 +24,7 @@ fun ChordsLibraryScreen(
     navController: NavHostController,
     currentRoute: String?,
     onNavigateToChordDetail: (String) -> Unit,
-    onNavigateToPracticeCreation: () -> Unit,
+    onNavigateToPracticeCreation: (List<String>) -> Unit,
     viewModel: ChordsLibraryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -55,7 +55,7 @@ fun ChordsLibraryScreen(
         floatingActionButton = {
             if (selectedChords.isNotEmpty()) {
                 FloatingActionButton(
-                    onClick = onNavigateToPracticeCreation
+                    onClick = { onNavigateToPracticeCreation(selectedChords.toList()) }
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 16.dp),

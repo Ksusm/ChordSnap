@@ -9,7 +9,10 @@ sealed class Destination(
     object ChordDetailScreen : Destination(route = "chord_detail/{chordId}") {
         fun createRoute(chordId: String) = "chord_detail/$chordId"
     }
-    object PracticeCreationScreen : Destination(route = "practice_creation")
+    object PracticeCreationScreen : Destination(route = "practice_creation?practiceId={practiceId}&chordIds={chordIds}") {
+        fun createRoute(practiceId: Long? = null, chordIds: String = "") =
+            "practice_creation?practiceId=$practiceId&chordIds=$chordIds"
+    }
     object PracticeViewScreen : Destination(route = "practice_view/{practiceId}") {
         fun createRoute(practiceId: String) = "practice_view/$practiceId"
     }

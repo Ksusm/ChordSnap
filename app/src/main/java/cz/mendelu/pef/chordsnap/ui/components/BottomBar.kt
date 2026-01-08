@@ -1,6 +1,7 @@
 package cz.mendelu.pef.chordsnap.ui.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -21,7 +22,7 @@ sealed class BottomNavItem(
     )
     object Chords : BottomNavItem(
         route = Destination.ChordsLibraryScreen.route,
-        icon = Icons.Default.List,
+        icon = Icons.AutoMirrored.Filled.List,
         label = "Chords"
     )
     object Map : BottomNavItem(

@@ -64,8 +64,14 @@ fun NavGraph(
                 onNavigateToChordDetail = { chordId ->
                     navController.navigate(Destination.ChordDetailScreen.createRoute(chordId))
                 },
-                onNavigateToPracticeCreation = {
-                    navController.navigate(Destination.PracticeCreationScreen.route)
+                onNavigateToPracticeCreation = { selectedChordIds ->
+                    val chordIdsString = selectedChordIds.joinToString(",")
+                    navController.navigate(
+                        Destination.PracticeCreationScreen.createRoute(
+                            practiceId = null,
+                            chordIds = chordIdsString
+                        )
+                    )
                 }
             )
         }
@@ -89,37 +95,37 @@ fun NavGraph(
         }
 
         // Practice Creation Screen
-        composable(route = Destination.PracticeCreationScreen.route) {
-            PracticeCreationScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-                onSavePractice = { practiceId ->
-                    navController.navigate(Destination.PracticeViewScreen.createRoute(practiceId)) {
-                        popUpTo(Destination.ChordsLibraryScreen.route)
-                    }
-                }
-            )
-        }
-
-        // Practice View Screen
         composable(
-            route = Destination.PracticeViewScreen.route,
+            route = Destination.PracticeCreationScreen.route,
             arguments = listOf(
                 navArgument("practiceId") {
                     type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("chordIds") {
+                    type = NavType.StringType
+                    defaultValue = ""
                 }
             )
         ) { backStackEntry ->
-            val practiceId = backStackEntry.arguments?.getString("practiceId") ?: ""
-            PracticeViewScreen(
+            val practiceIdString = backStackEntry.arguments?.getString("practiceId")
+            val practiceId = practiceIdString?.toLongOrNull()
+            val chordIdsString = backStackEntry.arguments?.getString("chordIds") ?: ""
+            val selectedChordIds = if (chordIdsString.isNotBlank()) {
+                chordIdsString.split(",")
+            } else {
+                emptyList()
+            }
+
+            PracticeCreationScreen(
                 practiceId = practiceId,
+                selectedChordIds = selectedChordIds,
                 onNavigateBack = {
                     navController.popBackStack()
                 },
-                onNavigateToEdit = {
-                    // Navigate to edit mode (can reuse PracticeCreationScreen with edit mode)
-                    navController.navigate(Destination.PracticeCreationScreen.route)
+                onSaved = {
+                    navController.popBackStack()
                 }
             )
         }
