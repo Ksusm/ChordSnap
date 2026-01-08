@@ -14,7 +14,7 @@ sealed class Destination(
             "practice_creation?practiceId=$practiceId&chordIds=$chordIds"
     }
     object PracticeViewScreen : Destination(route = "practice_view/{practiceId}") {
-        fun createRoute(practiceId: String) = "practice_view/$practiceId"
+        fun createRoute(practiceId: Long) = "practice_view/$practiceId"
     }
     object MapScreen : Destination(route = "map")
     object SettingsScreen : Destination(route = "settings")

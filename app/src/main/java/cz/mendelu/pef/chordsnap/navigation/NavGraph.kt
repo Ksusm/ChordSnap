@@ -38,6 +38,11 @@ fun NavGraph(
                 },
                 onNavigateToSettings = {
                     navController.navigate(Destination.SettingsScreen.route)
+                },
+                onNavigateToPractice = { practiceId ->
+                    navController.navigate(
+                        Destination.PracticeViewScreen.createRoute(practiceId)
+                    )
                 }
             )
         }
@@ -126,6 +131,35 @@ fun NavGraph(
                 },
                 onSaved = {
                     navController.popBackStack()
+                }
+            )
+        }
+
+        // Practice View Screen
+        composable(
+            route = Destination.PracticeViewScreen.route,
+            arguments = listOf(
+                navArgument("practiceId") {
+                    type = NavType.LongType
+                }
+            )
+        ) { backStackEntry ->
+            val practiceId = backStackEntry.arguments?.getLong("practiceId") ?: 0L
+            PracticeViewScreen(
+                practiceId = practiceId,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToEdit = { id ->
+                    navController.navigate(
+                        Destination.PracticeCreationScreen.createRoute(
+                            practiceId = id,
+                            chordIds = ""
+                        )
+                    )
+                },
+                onNavigateToChordDetail = { chordId ->
+                    navController.navigate(Destination.ChordDetailScreen.createRoute(chordId))
                 }
             )
         }
