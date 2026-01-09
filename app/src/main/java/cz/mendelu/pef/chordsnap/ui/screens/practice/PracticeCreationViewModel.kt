@@ -86,6 +86,17 @@ class PracticeCreationViewModel @Inject constructor(
         }
     }
 
+    fun addChord(chordId: String, chord: ChordEntity) {
+        if (!selectedChordIds.contains(chordId)) {
+            selectedChordIds = selectedChordIds + chordId
+            val currentState = _uiState.value
+            if (currentState is PracticeCreationUiState.Success) {
+                val updatedChords = currentState.chords + chord
+                _uiState.value = currentState.copy(chords = updatedChords)
+            }
+        }
+    }
+
     fun moveChordUp(index: Int) {
         if (index > 0) {
             selectedChordIds = selectedChordIds.toMutableList().apply {

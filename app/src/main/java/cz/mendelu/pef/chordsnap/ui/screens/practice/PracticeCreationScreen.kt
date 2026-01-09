@@ -28,6 +28,8 @@ fun PracticeCreationScreen(
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
 
+    var showAddChordDialog by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         viewModel.loadPractice(practiceId, selectedChordIds)
     }
@@ -55,6 +57,15 @@ fun PracticeCreationScreen(
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            if (uiState is PracticeCreationUiState.Success) {
+                FloatingActionButton(
+                    onClick = { showAddChordDialog = true }
+                ) {
+                    Icon(Icons.Default.Add, "Add chord")
+                }
+            }
         }
     ) { paddingValues ->
         Column(
@@ -62,17 +73,25 @@ fun PracticeCreationScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            // Practice name TextField
+            val practiceName = if (uiState is PracticeCreationUiState.Success) {
+                (uiState as PracticeCreationUiState.Success).practiceName
+            } else {
+                ""
+            }
+
             OutlinedTextField(
-                value = if (uiState is PracticeCreationUiState.Success) {
-                    (uiState as PracticeCreationUiState.Success).practiceName
-                } else {
-                    ""
+                value = practiceName,
+                onValueChange = { newValue ->
+                    if (newValue.length <= 18) {
+                        viewModel.updatePracticeName(newValue)
+                    }
                 },
-                onValueChange = { viewModel.updatePracticeName(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                 label = { Text("Practice name") },
+                supportingText = { Text("${practiceName.length}/18") },
                 singleLine = true
             )
 
@@ -140,6 +159,17 @@ fun PracticeCreationScreen(
                 }
             }
         }
+    }
+
+    if (showAddChordDialog) {
+        AddChordDialog(
+            onDismiss = { showAddChordDialog = false },
+            onChordSelected = { chord ->
+                viewModel.addChord(chord.id, chord)
+                showAddChordDialog = false
+            },
+            viewModel = hiltViewModel()
+        )
     }
 }
 
@@ -218,4 +248,90 @@ fun PracticeChordItem(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddChordDialog(
+    onDismiss: () -> Unit,
+    onChordSelected: (ChordEntity) -> Unit,
+    viewModel: cz.mendelu.pef.chordsnap.ui.screens.chordslibrary.ChordsLibraryViewModel
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add chord") },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(400.dp)
+            ) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { viewModel.updateSearchQuery(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Search chords") },
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                when (val state = uiState) {
+                    is cz.mendelu.pef.chordsnap.ui.screens.chordslibrary.ChordsLibraryUiState.Success -> {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(
+                                count = state.chords.size,
+                                key = { state.chords[it].id }
+                            ) { index ->
+                                val chord = state.chords[index]
+                                Card(
+                                    onClick = { onChordSelected(chord) },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        AsyncImage(
+                                            model = chord.imageUrl,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(40.dp),
+                                            contentScale = ContentScale.Fit
+                                        )
+                                        Text(
+                                            text = chord.nameEng,
+                                            style = MaterialTheme.typography.bodyLarge
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
 }
