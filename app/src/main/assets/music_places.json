@@ -1,0 +1,213 @@
+{
+  "places": [
+    {
+      "id": "1",
+      "name": "Studio Indies",
+      "address": "Štefánikova 8, 602 00 Brno-Královo Pole-Ponava",
+      "latitude": 49.20856065627662,
+      "longitude": 16.60412838053005,
+      "rating": 4.7,
+      "type": "RECORDING_STUDIO",
+      "imageUrl": "file:///android_asset/images/studio_indies.jpg",
+      "website": "http://www.studioindies.cz/"
+    },
+    {
+      "id": "2",
+      "name": "Brno Conservatory",
+      "address": "tř. Kpt. Jaroše 1890/45, 602 00 Brno-střed-Černá Pole",
+      "latitude": 49.20451754994828,
+      "longitude": 16.610264787915177,
+      "rating": 4.7,
+      "type": "CONSERVATORY",
+      "imageUrl": "file:///android_asset/images/conservatory.jpg",
+      "website": "https://konzervatorbrno.eu"
+    },
+    {
+      "id": "3",
+      "name": "Kytary - Brno store",
+      "address": "Lidická 1869/28, 602 00 Brno-střed-Černá Pole",
+      "latitude": 49.202629362162824,
+      "longitude": 16.608610257292078,
+      "rating": 4.8,
+      "type": "MUSIC_SHOP",
+      "imageUrl": "file:///android_asset/images/guitars.jpg",
+      "website": "https://kytary.cz"
+    },
+    {
+      "id": "4",
+      "name": "Music Garden",
+      "address": "Gajdošova 7, 615 00 Brno-Židenice",
+      "latitude": 49.20100168950284,
+      "longitude": 16.644744090734093,
+      "rating": 5.0,
+      "type": "MUSIC_SCHOOL",
+      "imageUrl": "file:///android_asset/images/music_garden.png",
+      "website": "https://www.music-garden.cz"
+    },
+    {
+      "id": "5",
+      "name": "Hudební nástroje - Radek Bagar",
+      "address": "Vranovská 9, 602 00 Brno-sever",
+      "latitude": 49.203625042461326,
+      "longitude": 16.625582673340155,
+      "rating": 4.1,
+      "type": "MUSIC_SHOP",
+      "imageUrl": "file:///android_asset/images/radek_bagar.jpg",
+      "website": "https://www.rabamusic.cz"
+    },
+    {
+      "id": "6",
+      "name": "Hawky Music",
+      "address": "Cejl 72, 602 00 Brno-střed",
+      "latitude": 49.20128889490778,
+      "longitude": 16.626495794345804,
+      "rating": 5.0,
+      "type": "RECORDING_STUDIO",
+      "imageUrl": "file:///android_asset/images/hawky_music.jpg",
+      "website": "http://fb.com/hawkymusic"
+    },
+    {
+      "id": "7",
+      "name": "Rehearsal Rooms Brno",
+      "address": "Čechyňská 18, 602 00 Brno-střed",
+      "latitude": 49.18869759540583,
+      "longitude": 16.619311561231754,
+      "rating": 4.7,
+      "type": "REHEARSAL_ROOM",
+      "imageUrl": "file:///android_asset/images/rehersal_rooms.jpg",
+      "website": "http://www.zkusebnybrno.cz/"
+    },
+    {
+      "id": "8",
+      "name": "ELMUS",
+      "address": "Václavská 15, 603 00 Brno-střed",
+      "latitude": 49.19098777590467,
+      "longitude": 16.59566402148324,
+      "rating": 4.9,
+      "type": "MUSIC_SCHOOL",
+      "imageUrl": "file:///android_asset/images/elmus.jpg",
+      "website": "http://www.elmus.cz/"
+    },
+    {
+      "id": "9",
+      "name": "Kytarový Institut",
+      "address": "Gorkého 51, 602 00 Brno-střed-Veveří",
+      "latitude": 49.20056485820951,
+      "longitude": 16.601020104838216,
+      "rating": 5.0,
+      "type": "MUSIC_SCHOOL",
+      "imageUrl": "file:///android_asset/images/guitar_institute.jpg",
+      "website": "http://kytarovyinstitut.cz/"
+    },
+    {
+      "id": "10",
+      "name": "Škola kytary Brno",
+      "address": "Jaselská 11, 602 00 Brno-střed",
+      "latitude": 49.198667226738046,
+      "longitude": 16.600866223994522,
+      "rating": 4.8,
+      "type": "MUSIC_SCHOOL",
+      "imageUrl": "file:///android_asset/images/guitar_school.jpg",
+      "website": "http://skolakytarybrno.cz/"
+    },
+    {
+      "id": "11",
+      "name": "Clarina Music",
+      "address": "Česká 16, 602 00 Brno-střed",
+      "latitude": 49.19665292125436,
+      "longitude": 16.60602271538918,
+      "rating": 4.6,
+      "type": "MUSIC_SHOP",
+      "imageUrl": "file:///android_asset/images/clarina_music.jpg",
+      "website": "http://www.clarina.cz/"
+    },
+    {
+      "id": "12",
+      "name": "A Vocal Studio",
+      "address": "Bašty, 602 00 Brno-střed",
+      "latitude": 49.19095371314592,
+      "longitude": 16.609163426984463,
+      "rating": 5.0,
+      "type": "RECORDING_STUDIO",
+      "imageUrl": "file:///android_asset/images/vocal_studio.jpg",
+      "website": "http://avocalstudio.cz/"
+    },
+    {
+      "id": "13",
+      "name": "SoundWaves",
+      "address": "Malinovského nám. 603 603/4, 602 00 Brno-střed",
+      "latitude": 49.19572145615596,
+      "longitude": 16.6140557761124,
+      "rating": 5.0,
+      "type": "RECORDING_STUDIO",
+      "imageUrl": "file:///android_asset/images/sound_waves.jpg",
+      "website": "http://soundwaves.cz/"
+    },
+    {
+      "id": "14",
+      "name": "JAMU",
+      "address": "Komenského nám. 6, 662 15 Brno-střed",
+      "latitude": 49.1969605099833,
+      "longitude": 16.604359822235672,
+      "rating": 4.7,
+      "type": "MUSIC_ACADEMY",
+      "imageUrl": "file:///android_asset/images/jamu.jpg",
+      "website": "http://hf.jamu.cz/"
+    },
+    {
+      "id": "15",
+      "name": "X-Stream Studio Brno",
+      "address": "602 00 Brno-střed",
+      "latitude": 49.19611519089738,
+      "longitude": 16.608153644042552,
+      "rating": null,
+      "type": "RECORDING_STUDIO",
+      "imageUrl": "file:///android_asset/images/xstream.jpg",
+      "website": "https://xstreamstudio.cz"
+    },
+    {
+      "id": "16",
+      "name": "MUSICAL INSTRUMENTS BRNO",
+      "address": "Veselá 197, 602 00 Brno-město",
+      "latitude": 49.19472699477815,
+      "longitude": 16.60667306478329,
+      "rating": 4.4,
+      "type": "MUSIC_SHOP",
+      "imageUrl": "file:///android_asset/images/musical_instruments.jpeg",
+      "website": "https://www.hnbrno.cz/"
+    },
+    {
+      "id": "17",
+      "name": "Nahrávací studio Divadla na Orlí",
+      "address": "Orlí 19, 602 00 Brno-střed",
+      "latitude": 49.19443252392892,
+      "longitude": 16.612445178235955,
+      "rating": 4.9,
+      "type": "RECORDING_STUDIO",
+      "imageUrl": "file:///android_asset/images/studio_dno.jpg",
+      "website": "http://studio.jamu.cz/"
+    },
+    {
+      "id": "18",
+      "name": "Nahrávadlo.cz",
+      "address": "Divadelní 6, 602 00 Brno-střed",
+      "latitude": 49.19502146387385,
+      "longitude": 16.613904299821353,
+      "rating": 5.0,
+      "type": "RECORDING_STUDIO",
+      "imageUrl": "file:///android_asset/images/nahravadlo.png",
+      "website": "http://www.nahravadlo.cz/"
+    },
+    {
+      "id": "19",
+      "name": "Maximum Underground S.r.o.",
+      "address": "Josefská 505, 602 00 Brno-město",
+      "latitude": 49.19305830345532,
+      "longitude": 16.611951651817364,
+      "rating": 5.0,
+      "type": "MUSIC_SHOP",
+      "imageUrl": "file:///android_asset/images/maximum_underground.jpg",
+      "website": "http://www.maximum.cz/"
+    }
+  ]
+}

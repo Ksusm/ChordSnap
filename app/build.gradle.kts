@@ -124,6 +124,8 @@ dependencies {
     // Google Maps
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
+    implementation(libs.maps.compose.utils)
+    implementation(libs.maps.utils)
 
     // Testing
     testImplementation(libs.junit)
