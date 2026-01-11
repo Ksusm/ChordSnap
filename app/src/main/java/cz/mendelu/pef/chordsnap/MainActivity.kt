@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,13 +27,12 @@ class MainActivity : ComponentActivity() {
     lateinit var preferencesManager: UserPreferencesManager
 
     override fun attachBaseContext(newBase: Context) {
-        // Read language synchronously and apply BEFORE activity is created
         val preferences = UserPreferencesManager(newBase)
         val savedLanguage = runBlocking {
             try {
                 preferences.languageFlow.first()
             } catch (e: Exception) {
-                "en" // fallback to English if error
+                "en"
             }
         }
 
@@ -45,7 +45,15 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            ChordSnapTheme {
+            val theme by preferencesManager.themeFlow.collectAsState(initial = "system")
+
+            val darkTheme = when (theme) {
+                "light" -> false
+                "dark" -> true
+                else -> isSystemInDarkTheme()
+            }
+
+            ChordSnapTheme(darkTheme = darkTheme) {
                 val navController = rememberNavController()
 
                 Surface(
