@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">ChordSnap</string>
+
+    <!-- Common -->
+    <string name="back">Zpět</string>
+    <string name="save">Uložit</string>
+    <string name="cancel">Zrušit</string>
+    <string name="delete">Smazat</string>
+    <string name="edit">Upravit</string>
+    <string name="close">Zavřít</string>
+    <string name="search">Hledat</string>
+    <string name="practice">Procvičit</string>
+    <string name="add">Přidat</string>
+    <string name="remove">Odebrat</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Domů</string>
+    <string name="nav_chords">Akordy</string>
+    <string name="nav_map">Mapa</string>
+
+    <!-- Home Screen -->
+    <string name="home_title">ChordSnap</string>
+    <string name="home_ready_to_explore">Jste připraveni prozkoumat nové akordy?</string>
+    <string name="home_your_practices">Vaše cvičení</string>
+    <string name="home_no_practices">Zatím žádná cvičení</string>
+    <string name="home_no_practices_subtitle">Vyberte akordy z knihovny a vytvořte si první sadu na procvičování</string>
+    <string name="home_chord_count">%d akord</string>
+    <string name="home_chords_count">%d akordů</string>
+    <string name="scan_chord">Naskenovat akord</string>
+
+    <!-- Scan Screen -->
+    <string name="scan_title">Naskenovat akord</string>
+    <string name="scan_instruction">Umístěte název akordu do rámečku a klepněte</string>
+    <string name="scan_take_photo">Vyfoťte ručně psaný nebo tištěný název akordu</string>
+    <string name="scan_searching">Hledám akord…</string>
+    <string name="scan_no_chord_found">Akord nenalezen. Zkuste to prosím znovu.</string>
+    <string name="scan_database_not_loaded">Databáze akordů ještě nebyla načtena</string>
+    <string name="camera_permission_required">Pro skenování akordů je vyžadováno oprávnění ke kameře</string>
+    <string name="grant_permission">Udělit oprávnění</string>
+
+    <!-- Chords Library Screen -->
+    <string name="chords_library_title">Knihovna akordů</string>
+    <string name="search_chords">Hledat akordy</string>
+    <string name="delete_selected">Smazat vybrané</string>
+    <string name="no_chords_yet">Zatím žádné akordy. Naskenujte nějaké akordy!</string>
+    <string name="filter_all">Vše</string>
+    <string name="filter_major">Durové</string>
+    <string name="filter_minor">Molové</string>
+    <string name="filter_diminished">Zmenšené</string>
+    <string name="filter_7th">Septimové</string>
+    <string name="failed_to_load_chords">Nepodařilo se načíst akordy</string>
+
+    <!-- Chord Detail Screen -->
+    <string name="chord_detail_title">Detail akordu</string>
+    <string name="chord_diagram">Diagram akordu</string>
+    <string name="notes_in_chord">Tóny v akordu</string>
+    <string name="chord_information">Informace o akordu</string>
+    <string name="chord_type">Typ akordu</string>
+    <string name="base_note">Základní tón</string>
+    <string name="chord_not_found">Akord nenalezen</string>
+    <string name="failed_to_load_chord">Nepodařilo se načíst akord</string>
+    <string name="connection_error">Chyba připojení</string>
+
+    <!-- Practice Creation Screen -->
+    <string name="practice_creation_title">Cvičení</string>
+    <string name="practice_name">Název cvičení</string>
+    <string name="practice_name_max_length">%d/18</string>
+    <string name="no_chords_selected">Nebyly vybrány žádné akordy</string>
+    <string name="add_chord">Přidat akord</string>
+    <string name="move_up">Posunout nahoru</string>
+    <string name="move_down">Posunout dolů</string>
+    <string name="failed_to_load_practice">Nepodařilo se načíst cvičení: %s</string>
+
+    <!-- Practice View Screen -->
+    <string name="practice_view_title">Cvičení</string>
+    <string name="tap_to_see_details">Klepněte pro zobrazení detailů</string>
+    <string name="delete_practice_title">Smazat cvičení?</string>
+    <string name="delete_practice_message">Tuto akci nelze vrátit zpět.</string>
+    <string name="practice_not_found">Cvičení nenalezeno</string>
+
+    <!-- Map Screen -->
+    <string name="map_title">Hudební místa</string>
+    <string name="map_legend">Legenda</string>
+    <string name="show_legend">Zobrazit legendu</string>
+    <string name="location_permission_required">Pro zobrazení mapy je vyžadováno oprávnění k poloze</string>
+
+    <!-- Music Place Types -->
+    <string name="place_type_music_shop">Hudební obchod</string>
+    <string name="place_type_music_school">Hudební škola</string>
+    <string name="place_type_conservatory">Konzervatoř</string>
+    <string name="place_type_music_academy">Hudební akademie</string>
+    <string name="place_type_recording_studio">Nahrávací studio</string>
+    <string name="place_type_rehearsal_room">Zkušebna</string>
+
+    <!-- Place Detail -->
+    <string name="place_type">Typ místa</string>
+    <string name="address">Adresa</string>
+    <string name="rating">Hodnocení</string>
+    <string name="rating_format">%s / 5,0</string>
+    <string name="website">Web</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Nastavení</string>
+    <string name="settings_app_settings">Nastavení aplikace</string>
+    <string name="settings_language">Jazyk</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_czech">Čeština</string>
+    <string name="settings_theme">Motiv</string>
+    <string name="settings_theme_light">Světlý</string>
+    <string name="settings_theme_dark">Tmavý</string>
+    <string name="settings_theme_system">Systémový</string>
+    <string name="settings_about">O aplikaci</string>
+    <string name="settings_version">Verze</string>
+    <string name="settings_app_name">ChordSnap</string>
+    <string name="settings_app_subtitle">Aplikace pro rozpoznávání akordů a správu cvičení na kytaru.</string>
+    <string name="settings_app_description">Naskenujte ručně psané nebo tištěné názvy akordů pomocí fotoaparátu a ML Kit rozpoznávání textu. Vytvořte si osobní knihovnu akordů a sestavte vlastní sady na procvičování. Objevte hudební obchody, školy a studia v Brně.</string>
+    <string name="settings_app_project_info">Vyvinuto jako studentský projekt pro předmět Vývoj aplikací pro Android 2 na Mendelově univerzitě v Brně.</string>
+    <string name="select_language">Vyberte jazyk</string>
+    <string name="select_theme">Vyberte motiv</string>
+
+    <!-- Error Messages -->
+    <string name="error_generic">Došlo k chybě</string>
+    <string name="error_network">Chyba sítě. Zkontrolujte prosím připojení.</string>
+    <string name="error_loading">Nepodařilo se načíst data</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_settings">Nastavení</string>
+    <string name="cd_back">Zpět</string>
+    <string name="cd_save">Uložit</string>
+    <string name="cd_edit">Upravit</string>
+    <string name="cd_delete">Smazat</string>
+    <string name="cd_scan">Skenovat</string>
+    <string name="cd_search">Hledat</string>
+    <string name="cd_filter">Filtr</string>
+    <string name="cd_chord_diagram">Diagram akordu pro %s</string>
+    <string name="cd_place_type">Typ místa</string>
+    <string name="cd_close">Zavřít</string>
+</resources>
