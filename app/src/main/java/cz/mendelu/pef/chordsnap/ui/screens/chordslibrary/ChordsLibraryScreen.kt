@@ -11,10 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.database.ChordEntity
 import cz.mendelu.pef.chordsnap.ui.components.BottomBar
 
@@ -42,11 +44,14 @@ fun ChordsLibraryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Chords library") },
+                title = { Text(stringResource(R.string.chords_library_title)) },
                 actions = {
                     if (selectedChords.isNotEmpty()) {
                         IconButton(onClick = { viewModel.deleteSelectedChords() }) {
-                            Icon(Icons.Default.Delete, "Delete selected")
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.delete_selected)
+                            )
                         }
                     }
                 }
@@ -68,8 +73,11 @@ fun ChordsLibraryScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Icon(Icons.Default.PlayArrow, "Practice")
-                        Text("Practice")
+                        Icon(
+                            Icons.Default.PlayArrow,
+                            contentDescription = stringResource(R.string.practice)
+                        )
+                        Text(stringResource(R.string.practice))
                     }
                 }
             }
@@ -107,7 +115,7 @@ fun ChordsLibraryScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                "No chords yet. Scan some chords to get started!",
+                                text = stringResource(R.string.no_chords_yet),
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
@@ -167,14 +175,20 @@ fun SearchBarWithFilter(
             value = query,
             onValueChange = onQueryChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Search chords") },
+            placeholder = { Text(stringResource(R.string.search_chords)) },
             leadingIcon = {
-                Icon(Icons.Default.Search, "Search")
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = stringResource(R.string.cd_search)
+                )
             },
             trailingIcon = {
                 Box {
                     IconButton(onClick = { onFilterExpandChange(true) }) {
-                        Icon(Icons.Default.Menu, "Filter")
+                        Icon(
+                            Icons.Default.Menu,
+                            contentDescription = stringResource(R.string.cd_filter)
+                        )
                     }
 
                     DropdownMenu(
@@ -182,23 +196,23 @@ fun SearchBarWithFilter(
                         onDismissRequest = { onFilterExpandChange(false) }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("All") },
+                            text = { Text(stringResource(R.string.filter_all)) },
                             onClick = { onFilterSelected(null) }
                         )
                         DropdownMenuItem(
-                            text = { Text("Major") },
+                            text = { Text(stringResource(R.string.filter_major)) },
                             onClick = { onFilterSelected("major") }
                         )
                         DropdownMenuItem(
-                            text = { Text("Minor") },
+                            text = { Text(stringResource(R.string.filter_minor)) },
                             onClick = { onFilterSelected("minor") }
                         )
                         DropdownMenuItem(
-                            text = { Text("Diminished") },
+                            text = { Text(stringResource(R.string.filter_diminished)) },
                             onClick = { onFilterSelected("diminished") }
                         )
                         DropdownMenuItem(
-                            text = { Text("7th") },
+                            text = { Text(stringResource(R.string.filter_7th)) },
                             onClick = { onFilterSelected("7") }
                         )
                     }
@@ -230,7 +244,7 @@ fun ChordListItem(
         ) {
             AsyncImage(
                 model = chord.imageUrl,
-                contentDescription = "Diagram for ${chord.nameEng}",
+                contentDescription = stringResource(R.string.cd_chord_diagram, chord.nameEng),
                 modifier = Modifier
                     .size(80.dp),
                 contentScale = ContentScale.Fit

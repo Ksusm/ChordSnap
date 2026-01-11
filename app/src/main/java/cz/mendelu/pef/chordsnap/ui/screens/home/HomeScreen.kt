@@ -15,11 +15,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.database.PracticeEntity
 import cz.mendelu.pef.chordsnap.ui.components.BottomBar
 
@@ -38,12 +40,12 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("ChordSnap") },
+                title = { Text(stringResource(R.string.home_title)) },
                 actions = {
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings"
+                            contentDescription = stringResource(R.string.cd_settings)
                         )
                     }
                 }
@@ -59,7 +61,7 @@ fun HomeScreen(
             FloatingActionButton(onClick = onNavigateToScan) {
                 Icon(
                     imageVector = Icons.Outlined.CameraAlt,
-                    contentDescription = "Scan chord"
+                    contentDescription = stringResource(R.string.scan_chord)
                 )
             }
         }
@@ -79,7 +81,7 @@ fun HomeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Ready to explore some chords?",
+                        text = stringResource(R.string.home_ready_to_explore),
                         style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(bottom = 16.dp)
@@ -104,7 +106,7 @@ fun HomeScreen(
 
             item {
                 Text(
-                    text = "Your practices",
+                    text = stringResource(R.string.home_your_practices),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
@@ -150,12 +152,12 @@ fun HomeScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = "No practices yet",
+                                        text = stringResource(R.string.home_no_practices),
                                         style = MaterialTheme.typography.bodyLarge
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
-                                        text = "Select chords from the library to create your first practice set",
+                                        text = stringResource(R.string.home_no_practices_subtitle),
                                         style = MaterialTheme.typography.bodyMedium,
                                         textAlign = TextAlign.Center,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -196,6 +198,11 @@ fun PracticeCard(
     onClick: () -> Unit
 ) {
     val chordCount = practice.chordIds.split(",").filter { it.isNotBlank() }.size
+    val chordText = if (chordCount == 1) {
+        stringResource(R.string.home_chord_count, chordCount)
+    } else {
+        stringResource(R.string.home_chords_count, chordCount)
+    }
 
     Card(
         onClick = onClick,
@@ -214,7 +221,7 @@ fun PracticeCard(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "$chordCount chord${if (chordCount != 1) "s" else ""}",
+                text = chordText,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -20,6 +22,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.compose.*
+import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.utils.ClusterItem
 import cz.mendelu.pef.chordsnap.utils.ClusterRenderer
 import cz.mendelu.pef.chordsnap.models.MusicPlace
@@ -42,10 +45,13 @@ fun MapScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Music Places") },
+                title = { Text(stringResource(R.string.map_title)) },
                 actions = {
                     IconButton(onClick = { showLegend = !showLegend }) {
-                        Icon(Icons.Default.Info, "Show legend")
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = stringResource(R.string.show_legend)
+                        )
                     }
                 }
             )
@@ -109,18 +115,24 @@ fun MapLegend(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Legend", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = stringResource(R.string.map_legend),
+                    style = MaterialTheme.typography.titleMedium
+                )
                 IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
-                    Icon(Icons.Default.Close, contentDescription = "Close")
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = stringResource(R.string.cd_close)
+                    )
                 }
             }
 
-            Divider()
+            HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
 
             MusicPlaceType.entries.forEach { type ->
                 LegendItem(
                     iconRes = type.iconRes,
-                    text = type.label
+                    text = stringResource(type.labelRes)
                 )
             }
         }
@@ -246,12 +258,12 @@ fun PlaceDetailBottomSheet(place: MusicPlace) {
             ) {
                 Icon(
                     painter = painterResource(id = placeType.iconRes),
-                    contentDescription = "Place type",
+                    contentDescription = stringResource(R.string.cd_place_type),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )
                 Text(
-                    text = placeType.label,
+                    text = stringResource(placeType.labelRes),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -262,7 +274,7 @@ fun PlaceDetailBottomSheet(place: MusicPlace) {
             ) {
                 Icon(
                     imageVector = Icons.Default.Place,
-                    contentDescription = "Address",
+                    contentDescription = stringResource(R.string.address),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )
@@ -279,12 +291,12 @@ fun PlaceDetailBottomSheet(place: MusicPlace) {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Star,
-                        contentDescription = "Rating",
+                        contentDescription = stringResource(R.string.rating),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = "${place.rating} / 5.0",
+                        text = stringResource(R.string.rating_format, place.rating.toString()),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -297,7 +309,7 @@ fun PlaceDetailBottomSheet(place: MusicPlace) {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Language,
-                        contentDescription = "Website",
+                        contentDescription = stringResource(R.string.website),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )

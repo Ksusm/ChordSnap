@@ -10,9 +10,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import cz.mendelu.pef.chordsnap.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,13 +36,16 @@ fun ChordDetailScreen(
                     Text(
                         text = when (val state = uiState) {
                             is ChordDetailUiState.Success -> state.chord.name.eng
-                            else -> "Chord Detail"
+                            else -> stringResource(R.string.chord_detail_title)
                         }
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.cd_back)
+                        )
                     }
                 }
             )
@@ -97,13 +102,13 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Chord Diagram",
+                    text = stringResource(R.string.chord_diagram),
                     style = MaterialTheme.typography.titleMedium
                 )
 
                 AsyncImage(
                     model = state.chord.images.pos1,
-                    contentDescription = "Chord diagram for ${state.chord.name.eng}",
+                    contentDescription = stringResource(R.string.cd_chord_diagram, state.chord.name.eng),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(300.dp),
@@ -120,7 +125,7 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Notes in chord",
+                    text = stringResource(R.string.notes_in_chord),
                     style = MaterialTheme.typography.titleMedium
                 )
 
@@ -139,7 +144,7 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Chord Information",
+                    text = stringResource(R.string.chord_information),
                     style = MaterialTheme.typography.titleMedium
                 )
 
@@ -149,7 +154,7 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
                 ) {
                     Column {
                         Text(
-                            text = "Chord type",
+                            text = stringResource(R.string.chord_type),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -163,7 +168,7 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
                         horizontalAlignment = Alignment.End
                     ) {
                         Text(
-                            text = "Base note",
+                            text = stringResource(R.string.base_note),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

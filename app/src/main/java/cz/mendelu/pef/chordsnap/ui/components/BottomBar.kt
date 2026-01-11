@@ -1,34 +1,37 @@
 package cz.mendelu.pef.chordsnap.ui.components
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.navigation.Destination
 
 sealed class BottomNavItem(
     val route: String,
     val icon: ImageVector,
-    val label: String
+    @StringRes val labelRes: Int
 ) {
     object Home : BottomNavItem(
         route = Destination.HomeScreen.route,
         icon = Icons.Default.Home,
-        label = "Home"
+        labelRes = R.string.nav_home
     )
     object Chords : BottomNavItem(
         route = Destination.ChordsLibraryScreen.route,
         icon = Icons.AutoMirrored.Filled.List,
-        label = "Chords"
+        labelRes = R.string.nav_chords
     )
     object Map : BottomNavItem(
         route = Destination.MapScreen.route,
         icon = Icons.Default.Place,
-        label = "Map"
+        labelRes = R.string.nav_map
     )
 }
 
@@ -49,10 +52,10 @@ fun BottomBar(
                 icon = {
                     Icon(
                         imageVector = item.icon,
-                        contentDescription = item.label
+                        contentDescription = stringResource(item.labelRes)
                     )
                 },
-                label = { Text(item.label) },
+                label = { Text(stringResource(item.labelRes)) },
                 selected = currentRoute == item.route,
                 onClick = {
                     if (currentRoute != item.route) {

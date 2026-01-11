@@ -17,10 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.analyzers.ChordTextAnalyzer
 import java.util.concurrent.Executors
 
@@ -68,10 +70,13 @@ fun ScanScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Scan a chord") },
+                title = { Text(stringResource(R.string.scan_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.cd_back)
+                        )
                     }
                 }
             )
@@ -108,7 +113,7 @@ fun ScanScreen(
                     when (uiState) {
                         is ScanUiState.Idle -> {
                             Text(
-                                "Position chord name and tap to scan",
+                                text = stringResource(R.string.scan_instruction),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = Color.White
                             )
@@ -116,17 +121,23 @@ fun ScanScreen(
                             FloatingActionButton(
                                 onClick = { analyzer?.triggerScan() }
                             ) {
-                                Icon(Icons.Default.CameraAlt, "Scan chord")
+                                Icon(
+                                    Icons.Default.CameraAlt,
+                                    contentDescription = stringResource(R.string.scan_chord)
+                                )
                             }
                         }
                         is ScanUiState.Processing -> {
                             CircularProgressIndicator(color = Color.White)
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text("Searching chord...", color = Color.White)
+                            Text(
+                                text = stringResource(R.string.scan_searching),
+                                color = Color.White
+                            )
                         }
                         is ScanUiState.Error -> {
                             Text(
-                                text = (uiState as ScanUiState.Error).message,
+                                text = stringResource((uiState as ScanUiState.Error).messageResId),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.error
                             )
@@ -141,7 +152,10 @@ fun ScanScreen(
                             FloatingActionButton(
                                 onClick = { analyzer?.triggerScan() }
                             ) {
-                                Icon(Icons.Default.CameraAlt, "Scan chord")
+                                Icon(
+                                    Icons.Default.CameraAlt,
+                                    contentDescription = stringResource(R.string.scan_chord)
+                                )
                             }
                         }
                         is ScanUiState.Success -> {
@@ -159,12 +173,12 @@ fun ScanScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Camera permission is required to scan chords",
+                        text = stringResource(R.string.camera_permission_required),
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }) {
-                        Text("Grant Permission")
+                        Text(stringResource(R.string.grant_permission))
                     }
                 }
             }

@@ -4,15 +4,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.database.ChordEntity
 import kotlinx.coroutines.launch
 
@@ -37,10 +40,13 @@ fun PracticeCreationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Practice") },
+                title = { Text(stringResource(R.string.practice_creation_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.cd_back)
+                        )
                     }
                 },
                 actions = {
@@ -53,7 +59,10 @@ fun PracticeCreationScreen(
                             }
                         }
                     ) {
-                        Icon(Icons.Default.Check, "Save")
+                        Icon(
+                            Icons.Default.Check,
+                            contentDescription = stringResource(R.string.cd_save)
+                        )
                     }
                 }
             )
@@ -63,7 +72,10 @@ fun PracticeCreationScreen(
                 FloatingActionButton(
                     onClick = { showAddChordDialog = true }
                 ) {
-                    Icon(Icons.Default.Add, "Add chord")
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = stringResource(R.string.add_chord)
+                    )
                 }
             }
         }
@@ -90,8 +102,10 @@ fun PracticeCreationScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                label = { Text("Practice name") },
-                supportingText = { Text("${practiceName.length}/18") },
+                label = { Text(stringResource(R.string.practice_name)) },
+                supportingText = {
+                    Text(stringResource(R.string.practice_name_max_length, practiceName.length))
+                },
                 singleLine = true
             )
 
@@ -114,7 +128,7 @@ fun PracticeCreationScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    "No chords selected",
+                                    text = stringResource(R.string.no_chords_selected),
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             }
@@ -200,7 +214,7 @@ fun PracticeChordItem(
 
             AsyncImage(
                 model = chord.imageUrl,
-                contentDescription = "Diagram for ${chord.nameEng}",
+                contentDescription = stringResource(R.string.cd_chord_diagram, chord.nameEng),
                 modifier = Modifier.size(60.dp),
                 contentScale = ContentScale.Fit
             )
@@ -220,7 +234,7 @@ fun PracticeChordItem(
                 ) {
                     Icon(
                         Icons.Default.ArrowUpward,
-                        "Move up",
+                        contentDescription = stringResource(R.string.move_up),
                         tint = if (isFirst) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                         else MaterialTheme.colorScheme.primary
                     )
@@ -229,7 +243,7 @@ fun PracticeChordItem(
                 IconButton(onClick = onRemove) {
                     Icon(
                         Icons.Default.Delete,
-                        "Remove",
+                        contentDescription = stringResource(R.string.remove),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
@@ -240,7 +254,7 @@ fun PracticeChordItem(
                 ) {
                     Icon(
                         Icons.Default.ArrowDownward,
-                        "Move down",
+                        contentDescription = stringResource(R.string.move_down),
                         tint = if (isLast) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                         else MaterialTheme.colorScheme.primary
                     )
@@ -262,7 +276,7 @@ fun AddChordDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add chord") },
+        title = { Text(stringResource(R.string.add_chord)) },
         text = {
             Column(
                 modifier = Modifier
@@ -273,7 +287,7 @@ fun AddChordDialog(
                     value = searchQuery,
                     onValueChange = { viewModel.updateSearchQuery(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Search chords") },
+                    label = { Text(stringResource(R.string.search_chords)) },
                     singleLine = true
                 )
 
@@ -330,7 +344,7 @@ fun AddChordDialog(
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

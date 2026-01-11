@@ -4,15 +4,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.database.ChordEntity
 import kotlinx.coroutines.launch
 
@@ -39,12 +42,15 @@ fun PracticeViewScreen(
                 title = {
                     when (val state = uiState) {
                         is PracticeViewUiState.Success -> Text(state.practice.name)
-                        else -> Text("Practice")
+                        else -> Text(stringResource(R.string.practice_view_title))
                     }
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.cd_back)
+                        )
                     }
                 },
                 actions = {
@@ -52,12 +58,18 @@ fun PracticeViewScreen(
                         IconButton(
                             onClick = { onNavigateToEdit(practiceId) }
                         ) {
-                            Icon(Icons.Default.Edit, "Edit")
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = stringResource(R.string.cd_edit)
+                            )
                         }
                         IconButton(
                             onClick = { showDeleteDialog = true }
                         ) {
-                            Icon(Icons.Default.Delete, "Delete")
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.cd_delete)
+                            )
                         }
                     }
                 }
@@ -115,8 +127,8 @@ fun PracticeViewScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete practice?") },
-            text = { Text("This action cannot be undone.") },
+            title = { Text(stringResource(R.string.delete_practice_title)) },
+            text = { Text(stringResource(R.string.delete_practice_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -127,12 +139,12 @@ fun PracticeViewScreen(
                         }
                     }
                 ) {
-                    Text("Delete")
+                    Text(stringResource(R.string.delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -163,7 +175,7 @@ fun PracticeChordViewItem(
 
             AsyncImage(
                 model = chord.imageUrl,
-                contentDescription = "Diagram for ${chord.nameEng}",
+                contentDescription = stringResource(R.string.cd_chord_diagram, chord.nameEng),
                 modifier = Modifier.size(100.dp),
                 contentScale = ContentScale.Fit
             )
@@ -176,7 +188,7 @@ fun PracticeChordViewItem(
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "Tap to see details",
+                    text = stringResource(R.string.tap_to_see_details),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

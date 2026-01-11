@@ -2,6 +2,7 @@ package cz.mendelu.pef.chordsnap.ui.screens.scan
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.communication.CommunicationResult
 import cz.mendelu.pef.chordsnap.communication.IChordsRemoteRepository
 import cz.mendelu.pef.chordsnap.database.ChordDao
@@ -18,7 +19,7 @@ sealed class ScanUiState {
     object Idle : ScanUiState()
     object Processing : ScanUiState()
     data class Success(val chord: Chord) : ScanUiState()
-    data class Error(val message: String) : ScanUiState()
+    data class Error(val messageResId: Int) : ScanUiState()
 }
 
 @HiltViewModel
@@ -43,7 +44,7 @@ class ScanScreenViewModel @Inject constructor(
                     allChords = result.data
                 }
                 else -> {
-                    _uiState.value = ScanUiState.Error("Failed to load chord database")
+                    _uiState.value = ScanUiState.Error(R.string.failed_to_load_chords)
                 }
             }
         }
@@ -51,12 +52,12 @@ class ScanScreenViewModel @Inject constructor(
 
     fun searchChordByName(recognizedText: String) {
         if (recognizedText.isBlank()) {
-            _uiState.value = ScanUiState.Error("No chord found. Please try again.")
+            _uiState.value = ScanUiState.Error(R.string.scan_no_chord_found)
             return
         }
 
         if (allChords.isEmpty()) {
-            _uiState.value = ScanUiState.Error("Chord database not loaded yet")
+            _uiState.value = ScanUiState.Error(R.string.scan_database_not_loaded)
             return
         }
 
@@ -69,7 +70,7 @@ class ScanScreenViewModel @Inject constructor(
                 saveChordToDatabase(foundChord)
                 _uiState.value = ScanUiState.Success(foundChord)
             } else {
-                _uiState.value = ScanUiState.Error("No chord found. Please try again.")
+                _uiState.value = ScanUiState.Error(R.string.scan_no_chord_found)
             }
         }
     }
