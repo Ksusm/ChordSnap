@@ -4,19 +4,24 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import cz.mendelu.pef.chordsnap.R
+import cz.mendelu.pef.chordsnap.ui.theme.*
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.cardPaddingInternal
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.elevationMedium
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.paddingLarge
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingMedium
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingSmall
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingXSmall
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,13 +40,20 @@ fun SettingsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.settings_title)) },
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.settings_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_back)
+                            contentDescription = stringResource(R.string.cd_back),
+                            tint = PrimaryPurple
                         )
                     }
                 }
@@ -69,9 +81,8 @@ fun SettingsScreen(
             )
 
             HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                thickness = DividerDefaults.Thickness,
-                color = DividerDefaults.color
+                modifier = Modifier.padding(horizontal = paddingLarge),
+                color = MaterialTheme.colorScheme.surfaceVariant
             )
 
             // Theme Setting
@@ -87,9 +98,8 @@ fun SettingsScreen(
             )
 
             HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                thickness = DividerDefaults.Thickness,
-                color = DividerDefaults.color
+                modifier = Modifier.padding(horizontal = paddingLarge),
+                color = MaterialTheme.colorScheme.surfaceVariant
             )
 
             // About Section
@@ -102,39 +112,45 @@ fun SettingsScreen(
             )
 
             HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                thickness = DividerDefaults.Thickness,
-                color = DividerDefaults.color
+                modifier = Modifier.padding(horizontal = paddingLarge),
+                color = MaterialTheme.colorScheme.surfaceVariant
             )
 
-            // Detailed About
-            Surface(
+            // Detailed About Card
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(12.dp),
-                tonalElevation = 2.dp
+                    .padding(paddingLarge),
+                shape = CustomShapes.chordCard,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                ),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = elevationMedium
+                )
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    modifier = Modifier.padding(cardPaddingInternal),
+                    verticalArrangement = Arrangement.spacedBy(spacingMedium)
                 ) {
                     Text(
                         text = stringResource(R.string.settings_app_name),
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        fontWeight = FontWeight.SemiBold,
+                        color = PrimaryPurple
                     )
                     Text(
                         text = stringResource(R.string.settings_app_subtitle),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(spacingXSmall))
                     Text(
                         text = stringResource(R.string.settings_app_description),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(spacingXSmall))
                     Text(
                         text = stringResource(R.string.settings_app_project_info),
                         style = MaterialTheme.typography.bodySmall,
@@ -150,29 +166,35 @@ fun SettingsScreen(
     if (showLanguageDialog) {
         AlertDialog(
             onDismissRequest = { showLanguageDialog = false },
-            title = { Text(stringResource(R.string.select_language)) },
+            title = {
+                Text(
+                    text = stringResource(R.string.select_language),
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
             text = {
-                Column {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(spacingSmall)
+                ) {
                     LanguageOption(
                         language = stringResource(R.string.settings_language_english),
                         isSelected = language == "en",
                         onClick = {
                             scope.launch {
                                 viewModel.setLanguage("en")
-                                kotlinx.coroutines.delay(100) // Wait for DataStore write
+                                kotlinx.coroutines.delay(100)
                                 showLanguageDialog = false
                                 (context as? ComponentActivity)?.recreate()
                             }
                         }
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                     LanguageOption(
                         language = stringResource(R.string.settings_language_czech),
                         isSelected = language == "cs",
                         onClick = {
                             scope.launch {
                                 viewModel.setLanguage("cs")
-                                kotlinx.coroutines.delay(100) // Wait for DataStore write
+                                kotlinx.coroutines.delay(100)
                                 showLanguageDialog = false
                                 (context as? ComponentActivity)?.recreate()
                             }
@@ -183,9 +205,14 @@ fun SettingsScreen(
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { showLanguageDialog = false }) {
-                    Text(stringResource(R.string.cancel))
+                    Text(
+                        text = stringResource(R.string.cancel),
+                        color = PrimaryPurple,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
-            }
+            },
+            shape = CustomShapes.chordCard
         )
     }
 
@@ -193,9 +220,16 @@ fun SettingsScreen(
     if (showThemeDialog) {
         AlertDialog(
             onDismissRequest = { showThemeDialog = false },
-            title = { Text(stringResource(R.string.select_theme)) },
+            title = {
+                Text(
+                    text = stringResource(R.string.select_theme),
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
             text = {
-                Column {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(spacingSmall)
+                ) {
                     ThemeOption(
                         theme = stringResource(R.string.settings_theme_light),
                         isSelected = theme == "light",
@@ -204,7 +238,6 @@ fun SettingsScreen(
                             showThemeDialog = false
                         }
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                     ThemeOption(
                         theme = stringResource(R.string.settings_theme_dark),
                         isSelected = theme == "dark",
@@ -213,7 +246,6 @@ fun SettingsScreen(
                             showThemeDialog = false
                         }
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                     ThemeOption(
                         theme = stringResource(R.string.settings_theme_system),
                         isSelected = theme == "system",
@@ -227,9 +259,14 @@ fun SettingsScreen(
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { showThemeDialog = false }) {
-                    Text(stringResource(R.string.cancel))
+                    Text(
+                        text = stringResource(R.string.cancel),
+                        color = PrimaryPurple,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
-            }
+            },
+            shape = CustomShapes.chordCard
         )
     }
 }
@@ -238,9 +275,13 @@ fun SettingsScreen(
 fun SettingsSectionTitle(title: String) {
     Text(
         text = title,
-        style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.SemiBold,
+        color = PrimaryPurple,
+        modifier = Modifier.padding(
+            horizontal = paddingLarge,
+            vertical = paddingLarge
+        )
     )
 }
 
@@ -252,19 +293,25 @@ fun SettingsItem(
 ) {
     Surface(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.background
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp),
+                .padding(horizontal = paddingLarge, vertical = paddingLarge),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(spacingXSmall)
+            ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = subtitle,
@@ -282,24 +329,37 @@ fun LanguageOption(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    Surface(
+    Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        color = if (isSelected) MaterialTheme.colorScheme.primaryContainer
-        else MaterialTheme.colorScheme.surface
+        shape = CustomShapes.chordCard,
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.surface
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(spacingMedium),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(spacingSmall)
         ) {
             RadioButton(
                 selected = isSelected,
-                onClick = onClick
+                onClick = onClick,
+                colors = RadioButtonDefaults.colors(
+                    selectedColor = PrimaryPurple,
+                    unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = language)
+            Text(
+                text = language,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+                else MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
@@ -310,24 +370,37 @@ fun ThemeOption(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    Surface(
+    Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        color = if (isSelected) MaterialTheme.colorScheme.primaryContainer
-        else MaterialTheme.colorScheme.surface
+        shape = CustomShapes.chordCard,
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.surface
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(spacingMedium),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(spacingSmall)
         ) {
             RadioButton(
                 selected = isSelected,
-                onClick = onClick
+                onClick = onClick,
+                colors = RadioButtonDefaults.colors(
+                    selectedColor = PrimaryPurple,
+                    unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = theme)
+            Text(
+                text = theme,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+                else MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }

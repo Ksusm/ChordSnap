@@ -1,17 +1,24 @@
 package cz.mendelu.pef.chordsnap.ui.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.navigation.Destination
+import cz.mendelu.pef.chordsnap.ui.theme.*
+import cz.mendelu.pef.chordsnap.ui.theme.GradientUtils.bottomBarGradient
 
 sealed class BottomNavItem(
     val route: String,
@@ -46,29 +53,69 @@ fun BottomBar(
         BottomNavItem.Map
     )
 
-    NavigationBar {
-        items.forEach { item ->
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = item.icon,
-                        contentDescription = stringResource(item.labelRes)
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Dimensions.bottomBarHeight)
+            .background(
+                brush = bottomBarGradient(
+                    startColor = MaterialTheme.colorScheme.tertiary,
+                    endColor = MaterialTheme.colorScheme.tertiaryContainer
+                )
+            ),
+        color = androidx.compose.ui.graphics.Color.Transparent,
+        tonalElevation = 0.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = bottomBarGradient(
+                        startColor = MaterialTheme.colorScheme.tertiary,
+                        endColor = MaterialTheme.colorScheme.tertiaryContainer
                     )
-                },
-                label = { Text(stringResource(item.labelRes)) },
-                selected = currentRoute == item.route,
-                onClick = {
-                    if (currentRoute != item.route) {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+                ),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items.forEach { item ->
+                val isSelected = currentRoute == item.route
+
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = stringResource(item.labelRes),
+                            modifier = Modifier.size(Dimensions.iconSizeMedium)
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(item.labelRes),
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    },
+                    selected = isSelected,
+                    onClick = {
+                        if (currentRoute != item.route) {
+                            navController.navigate(item.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
                         }
-                    }
-                }
-            )
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = PrimaryPurple,
+                        selectedTextColor = PrimaryPurple,
+                        unselectedIconColor = TextUnselected,
+                        unselectedTextColor = TextUnselected,
+                        indicatorColor = SurfaceWhite
+                    )
+                )
+            }
         }
     }
 }

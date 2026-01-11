@@ -18,12 +18,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.analyzers.ChordTextAnalyzer
+import cz.mendelu.pef.chordsnap.ui.theme.*
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.elevationFab
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.paddingLarge
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.paddingXLarge
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingLarge
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingSmall
 import java.util.concurrent.Executors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,17 +75,29 @@ fun ScanScreen(
     }
 
     Scaffold(
+        containerColor = Color.Black,
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.scan_title)) },
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.scan_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = SurfaceWhite
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_back)
+                            contentDescription = stringResource(R.string.cd_back),
+                            tint = SurfaceWhite
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Black.copy(alpha = 0.7f)
+                )
             )
         }
     ) { paddingValues ->
@@ -106,20 +125,28 @@ fun ScanScreen(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
-                        .padding(24.dp),
+                        .padding(paddingXLarge),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(spacingLarge)
                 ) {
                     when (uiState) {
                         is ScanUiState.Idle -> {
                             Text(
                                 text = stringResource(R.string.scan_instruction),
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = Color.White
+                                fontWeight = FontWeight.Medium,
+                                color = SurfaceWhite,
+                                textAlign = TextAlign.Center
                             )
 
                             FloatingActionButton(
-                                onClick = { analyzer?.triggerScan() }
+                                onClick = { analyzer?.triggerScan() },
+                                containerColor = PrimaryPurple,
+                                contentColor = SurfaceWhite,
+                                shape = CustomShapes.fab,
+                                elevation = FloatingActionButtonDefaults.elevation(
+                                    defaultElevation = elevationFab
+                                )
                             ) {
                                 Icon(
                                     Icons.Default.CameraAlt,
@@ -128,29 +155,52 @@ fun ScanScreen(
                             }
                         }
                         is ScanUiState.Processing -> {
-                            CircularProgressIndicator(color = Color.White)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            CircularProgressIndicator(
+                                color = PrimaryPurple
+                            )
+                            Spacer(modifier = Modifier.height(spacingSmall))
                             Text(
                                 text = stringResource(R.string.scan_searching),
-                                color = Color.White
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium,
+                                color = SurfaceWhite
                             )
                         }
                         is ScanUiState.Error -> {
-                            Text(
-                                text = stringResource((uiState as ScanUiState.Error).messageResId),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.error
-                            )
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = CustomShapes.chordCard,
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.errorContainer
+                                )
+                            ) {
+                                Text(
+                                    text = stringResource((uiState as ScanUiState.Error).messageResId),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(paddingLarge)
+                                )
+                            }
 
                             LaunchedEffect(Unit) {
                                 kotlinx.coroutines.delay(2000)
                                 viewModel.resetState()
                             }
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(spacingLarge))
 
                             FloatingActionButton(
-                                onClick = { analyzer?.triggerScan() }
+                                onClick = { analyzer?.triggerScan() },
+                                containerColor = PrimaryPurple,
+                                contentColor = SurfaceWhite,
+                                shape = CustomShapes.fab,
+                                elevation = FloatingActionButtonDefaults.elevation(
+                                    defaultElevation = elevationFab
+                                )
                             ) {
                                 Icon(
                                     Icons.Default.CameraAlt,
@@ -168,17 +218,31 @@ fun ScanScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp),
+                        .padding(paddingXLarge),
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                   // verticalArrangement = Arrangement.spacedBy(spacingLarge)
                 ) {
                     Text(
                         text = stringResource(R.string.camera_permission_required),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }) {
-                        Text(stringResource(R.string.grant_permission))
+
+                    Button(
+                        onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = PrimaryPurple,
+                            contentColor = SurfaceWhite
+                        ),
+                        shape = CustomShapes.chordCard
+                    ) {
+                        Text(
+                            text = stringResource(R.string.grant_permission),
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }

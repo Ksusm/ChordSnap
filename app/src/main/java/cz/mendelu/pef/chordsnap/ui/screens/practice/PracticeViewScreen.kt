@@ -12,11 +12,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.database.ChordEntity
+import cz.mendelu.pef.chordsnap.ui.theme.*
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.chordDiagramLarge
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.elevationMedium
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.paddingLarge
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingMedium
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingXSmall
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,42 +43,55 @@ fun PracticeViewScreen(
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     when (val state = uiState) {
-                        is PracticeViewUiState.Success -> Text(state.practice.name)
-                        else -> Text(stringResource(R.string.practice_view_title))
+                        is PracticeViewUiState.Success -> Text(
+                            text = state.practice.name,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        else -> Text(
+                            text = stringResource(R.string.practice_view_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
                     }
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_back)
+                            contentDescription = stringResource(R.string.cd_back),
+                            tint = PrimaryPurple
                         )
                     }
                 },
                 actions = {
                     if (uiState is PracticeViewUiState.Success) {
-                        IconButton(
-                            onClick = { onNavigateToEdit(practiceId) }
-                        ) {
+                        IconButton(onClick = { onNavigateToEdit(practiceId) }) {
                             Icon(
                                 Icons.Default.Edit,
-                                contentDescription = stringResource(R.string.cd_edit)
+                                contentDescription = stringResource(R.string.cd_edit),
+                                tint = AccentCyan
                             )
                         }
-                        IconButton(
-                            onClick = { showDeleteDialog = true }
-                        ) {
+                        IconButton(onClick = { showDeleteDialog = true }) {
                             Icon(
                                 Icons.Default.Delete,
-                                contentDescription = stringResource(R.string.cd_delete)
+                                contentDescription = stringResource(R.string.cd_delete),
+                                tint = AccentCyan
                             )
                         }
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         }
     ) { paddingValues ->
@@ -84,14 +103,15 @@ fun PracticeViewScreen(
             when (val state = uiState) {
                 is PracticeViewUiState.Loading -> {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
+                        color = PrimaryPurple
                     )
                 }
                 is PracticeViewUiState.Success -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        contentPadding = PaddingValues(paddingLarge),
+                        verticalArrangement = Arrangement.spacedBy(spacingMedium)
                     ) {
                         itemsIndexed(
                             items = state.chords,
@@ -109,7 +129,7 @@ fun PracticeViewScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp),
+                            .padding(paddingLarge),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -127,8 +147,15 @@ fun PracticeViewScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text(stringResource(R.string.delete_practice_title)) },
-            text = { Text(stringResource(R.string.delete_practice_message)) },
+            title = {
+                Text(
+                    text = stringResource(R.string.delete_practice_title),
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            text = {
+                Text(stringResource(R.string.delete_practice_message))
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -139,14 +166,24 @@ fun PracticeViewScreen(
                         }
                     }
                 ) {
-                    Text(stringResource(R.string.delete))
+                    Text(
+                        text = stringResource(R.string.delete),
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Medium
+                    )
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text(stringResource(R.string.cancel))
+                    Text(
+                        text = stringResource(R.string.cancel),
+                        color = PrimaryPurple,
+                        fontWeight = FontWeight.Medium
+                    )
                 }
-            }
+            },
+            containerColor = MaterialTheme.colorScheme.surface,
+            shape = CustomShapes.chordCard
         )
     }
 }
@@ -159,45 +196,61 @@ fun PracticeChordViewItem(
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        shape = CustomShapes.chordCard,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = elevationMedium
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(spacingMedium),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(spacingMedium)
         ) {
+            // Index number
             Text(
                 text = "${index + 1}.",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = PrimaryPurple
             )
 
+            // Chord diagram
             AsyncImage(
                 model = chord.imageUrl,
                 contentDescription = stringResource(R.string.cd_chord_diagram, chord.nameEng),
-                modifier = Modifier.size(100.dp),
+                modifier = Modifier.size(chordDiagramLarge),
                 contentScale = ContentScale.Fit
             )
 
+            // Chord info
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(spacingXSmall)
             ) {
                 Text(
                     text = chord.nameEng,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
                     text = stringResource(R.string.tap_to_see_details),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
+            // Chevron icon
             Icon(
                 imageVector = Icons.Default.ChevronRight,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = PrimaryPurple
             )
         }
     }

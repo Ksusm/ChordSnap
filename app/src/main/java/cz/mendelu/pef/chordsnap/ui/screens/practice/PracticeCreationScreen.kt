@@ -12,11 +12,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.database.ChordEntity
+import cz.mendelu.pef.chordsnap.ui.theme.*
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.chordDiagramSmall
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.elevationFab
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.elevationMedium
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.paddingLarge
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingMedium
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingSmall
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,14 +46,23 @@ fun PracticeCreationScreen(
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.practice_creation_title)) },
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.practice_creation_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_back)
+                            contentDescription = stringResource(R.string.cd_back),
+                            tint = PrimaryPurple
                         )
                     }
                 },
@@ -61,16 +78,26 @@ fun PracticeCreationScreen(
                     ) {
                         Icon(
                             Icons.Default.Check,
-                            contentDescription = stringResource(R.string.cd_save)
+                            contentDescription = stringResource(R.string.cd_save),
+                            tint = AccentCyan
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         },
         floatingActionButton = {
             if (uiState is PracticeCreationUiState.Success) {
                 FloatingActionButton(
-                    onClick = { showAddChordDialog = true }
+                    onClick = { showAddChordDialog = true },
+                    containerColor = PrimaryPurple,
+                    contentColor = SurfaceWhite,
+                    shape = CustomShapes.fab,
+                    elevation = FloatingActionButtonDefaults.elevation(
+                        defaultElevation = elevationFab
+                    )
                 ) {
                     Icon(
                         Icons.Default.Add,
@@ -101,12 +128,28 @@ fun PracticeCreationScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                label = { Text(stringResource(R.string.practice_name)) },
-                supportingText = {
-                    Text(stringResource(R.string.practice_name_max_length, practiceName.length))
+                    .padding(paddingLarge),
+                label = {
+                    Text(
+                        text = stringResource(R.string.practice_name),
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 },
-                singleLine = true
+                supportingText = {
+                    Text(
+                        text = stringResource(R.string.practice_name_max_length, practiceName.length),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
+                singleLine = true,
+                shape = CustomShapes.searchField,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = PrimaryPurple,
+                    focusedLabelColor = PrimaryPurple,
+                    cursorColor = PrimaryPurple,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             )
 
             Box(
@@ -115,7 +158,8 @@ fun PracticeCreationScreen(
                 when (val state = uiState) {
                     is PracticeCreationUiState.Loading -> {
                         CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
+                            color = PrimaryPurple
                         )
                     }
                     is PracticeCreationUiState.Success -> {
@@ -123,20 +167,21 @@ fun PracticeCreationScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(16.dp),
+                                    .padding(paddingLarge),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
                                     text = stringResource(R.string.no_chords_selected),
-                                    style = MaterialTheme.typography.bodyLarge
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         } else {
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                                contentPadding = PaddingValues(paddingLarge),
+                                verticalArrangement = Arrangement.spacedBy(spacingMedium)
                             ) {
                                 itemsIndexed(
                                     items = state.chords,
@@ -159,7 +204,7 @@ fun PracticeCreationScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(16.dp),
+                                .padding(paddingLarge),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -198,30 +243,41 @@ fun PracticeChordItem(
     onMoveDown: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        shape = CustomShapes.chordCard,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = elevationMedium
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(spacingMedium),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(spacingMedium)
         ) {
             Text(
                 text = "${index + 1}.",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = PrimaryPurple
             )
 
             AsyncImage(
                 model = chord.imageUrl,
                 contentDescription = stringResource(R.string.cd_chord_diagram, chord.nameEng),
-                modifier = Modifier.size(60.dp),
+                modifier = Modifier.size(chordDiagramSmall),
                 contentScale = ContentScale.Fit
             )
 
             Text(
                 text = chord.nameEng,
                 style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.weight(1f)
             )
 
@@ -235,8 +291,7 @@ fun PracticeChordItem(
                     Icon(
                         Icons.Default.ArrowUpward,
                         contentDescription = stringResource(R.string.move_up),
-                        tint = if (isFirst) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-                        else MaterialTheme.colorScheme.primary
+                        tint = if (isFirst) TextUnselected else PrimaryPurple
                     )
                 }
 
@@ -255,8 +310,7 @@ fun PracticeChordItem(
                     Icon(
                         Icons.Default.ArrowDownward,
                         contentDescription = stringResource(R.string.move_down),
-                        tint = if (isLast) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-                        else MaterialTheme.colorScheme.primary
+                        tint = if (isLast) TextUnselected else PrimaryPurple
                     )
                 }
             }
@@ -276,7 +330,12 @@ fun AddChordDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.add_chord)) },
+        title = {
+            Text(
+                text = stringResource(R.string.add_chord),
+                fontWeight = FontWeight.SemiBold
+            )
+        },
         text = {
             Column(
                 modifier = Modifier
@@ -288,16 +347,24 @@ fun AddChordDialog(
                     onValueChange = { viewModel.updateSearchQuery(it) },
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text(stringResource(R.string.search_chords)) },
-                    singleLine = true
+                    singleLine = true,
+                    shape = CustomShapes.searchField,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = PrimaryPurple,
+                        focusedLabelColor = PrimaryPurple,
+                        cursorColor = PrimaryPurple,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(spacingSmall))
 
                 when (val state = uiState) {
                     is cz.mendelu.pef.chordsnap.ui.screens.chordslibrary.ChordsLibraryUiState.Success -> {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            verticalArrangement = Arrangement.spacedBy(spacingSmall)
                         ) {
                             items(
                                 count = state.chords.size,
@@ -306,14 +373,18 @@ fun AddChordDialog(
                                 val chord = state.chords[index]
                                 Card(
                                     onClick = { onChordSelected(chord) },
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = CustomShapes.chordCard,
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                                    )
                                 ) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(12.dp),
+                                            .padding(spacingMedium),
                                         verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                        horizontalArrangement = Arrangement.spacedBy(spacingMedium)
                                     ) {
                                         AsyncImage(
                                             model = chord.imageUrl,
@@ -323,7 +394,9 @@ fun AddChordDialog(
                                         )
                                         Text(
                                             text = chord.nameEng,
-                                            style = MaterialTheme.typography.bodyLarge
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            fontWeight = FontWeight.Medium,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer
                                         )
                                     }
                                 }
@@ -335,7 +408,7 @@ fun AddChordDialog(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator()
+                            CircularProgressIndicator(color = PrimaryPurple)
                         }
                     }
                 }
@@ -344,8 +417,14 @@ fun AddChordDialog(
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel))
+                Text(
+                    text = stringResource(R.string.cancel),
+                    color = PrimaryPurple,
+                    fontWeight = FontWeight.Medium
+                )
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+        shape = CustomShapes.chordCard
     )
 }

@@ -1,11 +1,9 @@
 package cz.mendelu.pef.chordsnap.ui.screens.map
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,6 +12,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -28,6 +27,16 @@ import cz.mendelu.pef.chordsnap.utils.ClusterRenderer
 import cz.mendelu.pef.chordsnap.models.MusicPlace
 import cz.mendelu.pef.chordsnap.models.MusicPlaceType
 import cz.mendelu.pef.chordsnap.ui.components.BottomBar
+import cz.mendelu.pef.chordsnap.ui.theme.*
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.cardPaddingInternal
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.elevationMedium
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.iconSizeMedium
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.paddingLarge
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.paddingXLarge
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingLarge
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingMedium
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingSmall
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingXSmall
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,13 +53,20 @@ fun MapScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.map_title)) },
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.map_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
                 actions = {
                     IconButton(onClick = { showLegend = !showLegend }) {
                         Icon(
                             Icons.Default.Info,
-                            contentDescription = stringResource(R.string.show_legend)
+                            contentDescription = stringResource(R.string.show_legend),
+                            tint = AccentCyan
                         )
                     }
                 }
@@ -79,7 +95,7 @@ fun MapScreen(
                 MapLegend(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(16.dp),
+                        .padding(paddingLarge),
                     onDismiss = { showLegend = false }
                 )
             }
@@ -89,7 +105,9 @@ fun MapScreen(
     if (uiState.selectedPlace != null) {
         ModalBottomSheet(
             onDismissRequest = { viewModel.dismissBottomSheet() },
-            sheetState = sheetState
+            sheetState = sheetState,
+            shape = CustomShapes.chordCard,
+            containerColor = MaterialTheme.colorScheme.surface
         ) {
             PlaceDetailBottomSheet(place = uiState.selectedPlace!!)
         }
@@ -103,12 +121,17 @@ fun MapLegend(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = CustomShapes.chordCard,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = elevationMedium
+        )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(cardPaddingInternal),
+            verticalArrangement = Arrangement.spacedBy(spacingMedium)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -117,17 +140,25 @@ fun MapLegend(
             ) {
                 Text(
                     text = stringResource(R.string.map_legend),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-                IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.size(iconSizeMedium)
+                ) {
                     Icon(
                         Icons.Default.Close,
-                        contentDescription = stringResource(R.string.cd_close)
+                        contentDescription = stringResource(R.string.cd_close),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
 
-            HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.surfaceVariant
+            )
 
             MusicPlaceType.entries.forEach { type ->
                 LegendItem(
@@ -143,18 +174,19 @@ fun MapLegend(
 fun LegendItem(iconRes: Int, text: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.padding(vertical = 4.dp)
+        horizontalArrangement = Arrangement.spacedBy(spacingMedium),
+        modifier = Modifier.padding(vertical = spacingXSmall)
     ) {
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = null,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(iconSizeMedium),
             tint = Color.Unspecified
         )
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
 }
@@ -231,9 +263,10 @@ fun PlaceDetailBottomSheet(place: MusicPlace) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(bottom = paddingXLarge),
+        verticalArrangement = Arrangement.spacedBy(spacingLarge)
     ) {
+        // Place image
         AsyncImage(
             model = place.imageUrl,
             contentDescription = place.name,
@@ -244,79 +277,92 @@ fun PlaceDetailBottomSheet(place: MusicPlace) {
         )
 
         Column(
-            modifier = Modifier.padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(horizontal = paddingXLarge),
+            verticalArrangement = Arrangement.spacedBy(spacingLarge)
         ) {
+            // Place name
             Text(
                 text = place.name,
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
+            // Place type
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(spacingSmall)
             ) {
                 Icon(
                     painter = painterResource(id = placeType.iconRes),
                     contentDescription = stringResource(R.string.cd_place_type),
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
+                    tint = PrimaryPurple,
+                    modifier = Modifier.size(iconSizeMedium)
                 )
                 Text(
                     text = stringResource(placeType.labelRes),
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
+            // Address
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(spacingSmall)
             ) {
                 Icon(
                     imageVector = Icons.Default.Place,
                     contentDescription = stringResource(R.string.address),
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
+                    tint = AccentCyan,
+                    modifier = Modifier.size(iconSizeMedium)
                 )
                 Text(
                     text = place.address,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
+            // Rating
             if (place.rating != null) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(spacingSmall)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = stringResource(R.string.rating),
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
+                        tint = PrimaryPurple,
+                        modifier = Modifier.size(iconSizeMedium)
                     )
                     Text(
                         text = stringResource(R.string.rating_format, place.rating.toString()),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
 
+            // Website
             if (place.website != null) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(spacingSmall)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Language,
                         contentDescription = stringResource(R.string.website),
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
+                        tint = AccentCyan,
+                        modifier = Modifier.size(iconSizeMedium)
                     )
                     Text(
                         text = place.website,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary
+                        color = AccentCyan,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }

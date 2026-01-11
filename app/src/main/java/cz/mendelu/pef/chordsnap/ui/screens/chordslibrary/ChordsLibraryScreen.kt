@@ -1,5 +1,6 @@
 package cz.mendelu.pef.chordsnap.ui.screens.chordslibrary
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,15 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.database.ChordEntity
 import cz.mendelu.pef.chordsnap.ui.components.BottomBar
+import cz.mendelu.pef.chordsnap.ui.theme.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChordsLibraryScreen(
     navController: NavHostController,
@@ -42,21 +42,7 @@ fun ChordsLibraryScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.chords_library_title)) },
-                actions = {
-                    if (selectedChords.isNotEmpty()) {
-                        IconButton(onClick = { viewModel.deleteSelectedChords() }) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = stringResource(R.string.delete_selected)
-                            )
-                        }
-                    }
-                }
-            )
-        },
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             BottomBar(
                 navController = navController,
@@ -66,18 +52,27 @@ fun ChordsLibraryScreen(
         floatingActionButton = {
             if (selectedChords.isNotEmpty()) {
                 FloatingActionButton(
-                    onClick = { onNavigateToPracticeCreation(selectedChords.toList()) }
+                    onClick = { onNavigateToPracticeCreation(selectedChords.toList()) },
+                    containerColor = PrimaryPurple,
+                    contentColor = SurfaceWhite,
+                    shape = CustomShapes.fab,
+                    elevation = FloatingActionButtonDefaults.elevation(
+                        defaultElevation = Dimensions.elevationFab
+                    )
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(horizontal = Dimensions.paddingLarge),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(Dimensions.spacingSmall)
                     ) {
                         Icon(
                             Icons.Default.PlayArrow,
                             contentDescription = stringResource(R.string.practice)
                         )
-                        Text(stringResource(R.string.practice))
+                        Text(
+                            text = stringResource(R.string.practice),
+                            style = MaterialTheme.typography.labelLarge
+                        )
                     }
                 }
             }
@@ -86,8 +81,39 @@ fun ChordsLibraryScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
         ) {
+            // Screen title centered at top
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = Dimensions.screenHorizontalPadding,
+                        vertical = Dimensions.paddingLarge
+                    )
+            ) {
+                Text(
+                    text = stringResource(R.string.chords_library_title),
+                    style = MaterialTheme.typography.displayMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+
+                if (selectedChords.isNotEmpty()) {
+                    IconButton(
+                        onClick = { viewModel.deleteSelectedChords() },
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    ) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = stringResource(R.string.delete_selected),
+                            tint = AccentCyan
+                        )
+                    }
+                }
+            }
+
             SearchBarWithFilter(
                 query = searchQuery,
                 onQueryChange = { viewModel.updateSearchQuery(it) },
@@ -105,7 +131,7 @@ fun ChordsLibraryScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(color = PrimaryPurple)
                     }
                 }
                 is ChordsLibraryUiState.Success -> {
@@ -116,14 +142,15 @@ fun ChordsLibraryScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.no_chords_yet),
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     } else {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                            contentPadding = PaddingValues(Dimensions.screenHorizontalPadding),
+                            verticalArrangement = Arrangement.spacedBy(Dimensions.cardSpacing)
                         ) {
                             items(
                                 items = state.chords,
@@ -169,17 +196,24 @@ fun SearchBarWithFilter(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(Dimensions.screenHorizontalPadding)
+            .padding(bottom = Dimensions.paddingMedium)
     ) {
         OutlinedTextField(
             value = query,
             onValueChange = onQueryChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(stringResource(R.string.search_chords)) },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.search_chords),
+                    color = PrimaryPurple
+                )
+            },
             leadingIcon = {
                 Icon(
                     Icons.Default.Search,
-                    contentDescription = stringResource(R.string.cd_search)
+                    contentDescription = stringResource(R.string.cd_search),
+                    tint = PrimaryPurple
                 )
             },
             trailingIcon = {
@@ -187,7 +221,8 @@ fun SearchBarWithFilter(
                     IconButton(onClick = { onFilterExpandChange(true) }) {
                         Icon(
                             Icons.Default.Menu,
-                            contentDescription = stringResource(R.string.cd_filter)
+                            contentDescription = stringResource(R.string.cd_filter),
+                            tint = PrimaryPurple
                         )
                     }
 
@@ -218,7 +253,17 @@ fun SearchBarWithFilter(
                     }
                 }
             },
-            singleLine = true
+            singleLine = true,
+            shape = CustomShapes.searchField,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedBorderColor = PrimaryPurple,
+                unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+            )
         )
     }
 }
@@ -233,32 +278,44 @@ fun ChordListItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onChordClick)
+            .clickable(onClick = onChordClick),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        shape = CustomShapes.chordCard,
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = Dimensions.elevationSmall
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(Dimensions.paddingMedium),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(Dimensions.spacingMedium)
         ) {
             AsyncImage(
                 model = chord.imageUrl,
                 contentDescription = stringResource(R.string.cd_chord_diagram, chord.nameEng),
-                modifier = Modifier
-                    .size(80.dp),
+                modifier = Modifier.size(Dimensions.chordDiagramMedium),
                 contentScale = ContentScale.Fit
             )
 
             Text(
                 text = chord.nameEng,
                 style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.weight(1f)
             )
 
             Checkbox(
                 checked = isSelected,
-                onCheckedChange = onCheckboxChange
+                onCheckedChange = onCheckboxChange,
+                colors = CheckboxDefaults.colors(
+                    checkedColor = PrimaryPurple,
+                    uncheckedColor = TextUnselected,
+                    checkmarkColor = SurfaceWhite
+                )
             )
         }
     }

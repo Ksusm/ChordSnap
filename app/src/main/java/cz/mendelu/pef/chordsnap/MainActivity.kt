@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.rememberNavController
 import cz.mendelu.pef.chordsnap.datastore.UserPreferencesManager
 import cz.mendelu.pef.chordsnap.navigation.NavGraph
@@ -44,6 +47,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+        // Změna: Skryjeme POUZE navigační lištu (tlačítka dole)
+        windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars())
+
+        // Horní řádek (statusBars) necháme viditelný
+        windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
+
+        // Chování při potažení zůstává stejné
+        windowInsetsController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
         setContent {
             val theme by preferencesManager.themeFlow.collectAsState(initial = "system")
 
