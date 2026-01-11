@@ -1,5 +1,6 @@
 package cz.mendelu.pef.chordsnap.ui.screens.settings
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,8 +12,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import cz.mendelu.pef.chordsnap.R
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,6 +27,8 @@ fun SettingsScreen(
 ) {
     val language by viewModel.language.collectAsState()
     val theme by viewModel.theme.collectAsState()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     var showLanguageDialog by remember { mutableStateOf(false) }
     var showThemeDialog by remember { mutableStateOf(false) }
@@ -29,10 +36,13 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.cd_back)
+                        )
                     }
                 }
             )
@@ -45,15 +55,15 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             // App Section
-            SettingsSectionTitle(title = "App Settings")
+            SettingsSectionTitle(title = stringResource(R.string.settings_app_settings))
 
             // Language Setting
             SettingsItem(
-                title = "Language",
+                title = stringResource(R.string.settings_language),
                 subtitle = when (language) {
-                    "en" -> "English"
-                    "cs" -> "Čeština"
-                    else -> "English"
+                    "en" -> stringResource(R.string.settings_language_english)
+                    "cs" -> stringResource(R.string.settings_language_czech)
+                    else -> stringResource(R.string.settings_language_english)
                 },
                 onClick = { showLanguageDialog = true }
             )
@@ -66,12 +76,12 @@ fun SettingsScreen(
 
             // Theme Setting
             SettingsItem(
-                title = "Theme",
+                title = stringResource(R.string.settings_theme),
                 subtitle = when (theme) {
-                    "light" -> "Light"
-                    "dark" -> "Dark"
-                    "system" -> "System default"
-                    else -> "System default"
+                    "light" -> stringResource(R.string.settings_theme_light)
+                    "dark" -> stringResource(R.string.settings_theme_dark)
+                    "system" -> stringResource(R.string.settings_theme_system)
+                    else -> stringResource(R.string.settings_theme_system)
                 },
                 onClick = { showThemeDialog = true }
             )
@@ -83,10 +93,10 @@ fun SettingsScreen(
             )
 
             // About Section
-            SettingsSectionTitle(title = "About")
+            SettingsSectionTitle(title = stringResource(R.string.settings_about))
 
             SettingsItem(
-                title = "Version",
+                title = stringResource(R.string.settings_version),
                 subtitle = "1.0.0",
                 onClick = { }
             )
@@ -97,6 +107,7 @@ fun SettingsScreen(
                 color = DividerDefaults.color
             )
 
+            // Detailed About
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -109,23 +120,23 @@ fun SettingsScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "ChordSnap",
+                        text = stringResource(R.string.settings_app_name),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = "Guitar chord recognition and practice management application.",
+                        text = stringResource(R.string.settings_app_subtitle),
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Scan handwritten or printed chord names using your camera and ML Kit text recognition. Build your personal chord library and create custom practice sets. Discover music shops, schools, and studios in Brno.",
+                        text = stringResource(R.string.settings_app_description),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Developed as a student project for Android Development 2 course at Mendel University in Brno.",
+                        text = stringResource(R.string.settings_app_project_info),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
@@ -139,24 +150,32 @@ fun SettingsScreen(
     if (showLanguageDialog) {
         AlertDialog(
             onDismissRequest = { showLanguageDialog = false },
-            title = { Text("Select Language") },
+            title = { Text(stringResource(R.string.select_language)) },
             text = {
                 Column {
                     LanguageOption(
-                        language = "English",
+                        language = stringResource(R.string.settings_language_english),
                         isSelected = language == "en",
                         onClick = {
-                            viewModel.setLanguage("en")
-                            showLanguageDialog = false
+                            scope.launch {
+                                viewModel.setLanguage("en")
+                                kotlinx.coroutines.delay(100) // Wait for DataStore write
+                                showLanguageDialog = false
+                                (context as? ComponentActivity)?.recreate()
+                            }
                         }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     LanguageOption(
-                        language = "Čeština",
+                        language = stringResource(R.string.settings_language_czech),
                         isSelected = language == "cs",
                         onClick = {
-                            viewModel.setLanguage("cs")
-                            showLanguageDialog = false
+                            scope.launch {
+                                viewModel.setLanguage("cs")
+                                kotlinx.coroutines.delay(100) // Wait for DataStore write
+                                showLanguageDialog = false
+                                (context as? ComponentActivity)?.recreate()
+                            }
                         }
                     )
                 }
@@ -164,7 +183,7 @@ fun SettingsScreen(
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { showLanguageDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -174,11 +193,11 @@ fun SettingsScreen(
     if (showThemeDialog) {
         AlertDialog(
             onDismissRequest = { showThemeDialog = false },
-            title = { Text("Select Theme") },
+            title = { Text(stringResource(R.string.select_theme)) },
             text = {
                 Column {
                     ThemeOption(
-                        theme = "Light",
+                        theme = stringResource(R.string.settings_theme_light),
                         isSelected = theme == "light",
                         onClick = {
                             viewModel.setTheme("light")
@@ -187,7 +206,7 @@ fun SettingsScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     ThemeOption(
-                        theme = "Dark",
+                        theme = stringResource(R.string.settings_theme_dark),
                         isSelected = theme == "dark",
                         onClick = {
                             viewModel.setTheme("dark")
@@ -196,7 +215,7 @@ fun SettingsScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     ThemeOption(
-                        theme = "System default",
+                        theme = stringResource(R.string.settings_theme_system),
                         isSelected = theme == "system",
                         onClick = {
                             viewModel.setTheme("system")
@@ -208,7 +227,7 @@ fun SettingsScreen(
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { showThemeDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
