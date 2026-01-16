@@ -77,7 +77,7 @@ object RetrofitModule {
         json: Json
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://raw.githubusercontent.com/")
+            .baseUrl(BuildConfig.SERVER_URL)
             .client(okHttpClient)
             .addConverterFactory(
                 json.asConverterFactory("application/json".toMediaType())

@@ -10,10 +10,8 @@ plugins {
 }
 
 val properties = Properties()
-val localPropertiesFile = project.rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    properties.load(localPropertiesFile.reader())
-}
+properties.load(project.rootProject.file("local.properties").reader())
+val server = properties.getProperty("server")
 val githubToken = properties.getProperty("github.token", "")
 
 android {
@@ -34,11 +32,7 @@ android {
         versionCode = myVersionCode
         versionName = myVersionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "GITHUB_TOKEN", "\"$githubToken\"")
-        buildConfigField("Boolean", "HAS_GITHUB_TOKEN", "${githubToken.isNotEmpty()}")
-        buildConfigField("boolean", "DEBUG", "true")
+        testInstrumentationRunner = "cz.mendelu.pef.chordsnap.HiltTestRunner"
     }
 
     buildTypes {
@@ -51,7 +45,8 @@ android {
         }
 
         debug {
-            // Pro debugging
+            buildConfigField(type = "String", name = "SERVER_URL", value = server)
+            buildConfigField(type = "String", name = "GITHUB_TOKEN", value = "\"$githubToken\"")
         }
     }
 
@@ -67,6 +62,14 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
+        }
     }
 }
 
@@ -134,12 +137,16 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(libs.kotlin.test)
 
+    androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
     androidTestImplementation(libs.navigation.testing)
+    androidTestImplementation(libs.mockk)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.turbine)
     kspAndroidTest(libs.hilt.compiler.ksp)
 
     debugImplementation(libs.androidx.ui.tooling)
