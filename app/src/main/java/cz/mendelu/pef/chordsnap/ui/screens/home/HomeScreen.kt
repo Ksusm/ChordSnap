@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,6 +25,14 @@ import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.database.PracticeEntity
 import cz.mendelu.pef.chordsnap.ui.components.BottomBar
 import cz.mendelu.pef.chordsnap.ui.theme.*
+
+// TEST TAGS
+const val TestTagHomeTitle = "TestTagHomeTitle"
+const val TestTagHomeSettingsButton = "TestTagHomeSettingsButton"
+const val TestTagHomeScanFab = "TestTagHomeScanFab"
+const val TestTagHomePracticesRow = "TestTagHomePracticesRow"
+const val TestTagHomeNoPracticesMessage = "TestTagHomeNoPracticesMessage"
+// Practice cards: testTag("practice_card_${practice.id}")
 
 @Composable
 fun HomeScreen(
@@ -52,7 +61,8 @@ fun HomeScreen(
                 shape = CustomShapes.fab,
                 elevation = FloatingActionButtonDefaults.elevation(
                     defaultElevation = Dimensions.elevationFab
-                )
+                ),
+                modifier = Modifier.testTag(TestTagHomeScanFab)
             ) {
                 Icon(
                     imageVector = Icons.Outlined.CameraAlt,
@@ -83,10 +93,14 @@ fun HomeScreen(
                     Text(
                         text = stringResource(R.string.home_title),
                         style = MaterialTheme.typography.displayLarge,
-                        color = AppNamePurple
+                        color = AppNamePurple,
+                        modifier = Modifier.testTag(TestTagHomeTitle)
                     )
 
-                    IconButton(onClick = onNavigateToSettings) {
+                    IconButton(
+                        onClick = onNavigateToSettings,
+                        modifier = Modifier.testTag(TestTagHomeSettingsButton)
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = stringResource(R.string.cd_settings),
@@ -181,7 +195,9 @@ fun HomeScreen(
                     is HomeScreenUiState.Success -> {
                         if (state.practices.isEmpty()) {
                             Card(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag(TestTagHomeNoPracticesMessage),
                                 colors = CardDefaults.cardColors(
                                     containerColor = MaterialTheme.colorScheme.primaryContainer
                                 ),
@@ -220,7 +236,8 @@ fun HomeScreen(
                 (uiState as HomeScreenUiState.Success).practices.isNotEmpty()) {
                 item {
                     LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(Dimensions.cardSpacing)
+                        horizontalArrangement = Arrangement.spacedBy(Dimensions.cardSpacing),
+                        modifier = Modifier.testTag(TestTagHomePracticesRow)
                     ) {
                         items(
                             items = (uiState as HomeScreenUiState.Success).practices,
@@ -254,7 +271,8 @@ fun PracticeCard(
         onClick = onClick,
         modifier = Modifier
             .width(Dimensions.practiceCardWidth)
-            .height(Dimensions.practiceCardHeight),
+            .height(Dimensions.practiceCardHeight)
+            .testTag("practice_card_${practice.id}"),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),

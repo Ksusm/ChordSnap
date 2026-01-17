@@ -45,7 +45,7 @@ android {
         }
 
         debug {
-            buildConfigField(type = "String", name = "SERVER_URL", value = server)
+            buildConfigField(type = "String", name = "SERVER_URL", value = "\"$server\"")
             buildConfigField(type = "String", name = "GITHUB_TOKEN", value = "\"$githubToken\"")
         }
     }
