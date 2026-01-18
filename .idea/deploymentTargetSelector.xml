@@ -13,10 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="All Tests">
+      <SelectionState runConfigName="HomeScreenUITest (1)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="Tests in 'cz.mendelu.pef.chordsnap.database'">
+      <SelectionState runConfigName="ChordsLibraryScreenUITest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="ChordDetailScreenUITest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="PracticeCreationScreenUITest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="test_07_practiceCreation_add_fab_shows_dialog()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

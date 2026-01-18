@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -23,22 +24,26 @@ import cz.mendelu.pef.chordsnap.ui.theme.GradientUtils.bottomBarGradient
 sealed class BottomNavItem(
     val route: String,
     val icon: ImageVector,
-    @StringRes val labelRes: Int
+    @StringRes val labelRes: Int,
+    val testTag: String
 ) {
     object Home : BottomNavItem(
         route = Destination.HomeScreen.route,
         icon = Icons.Default.Home,
-        labelRes = R.string.nav_home
+        labelRes = R.string.nav_home,
+        testTag = "bottom_nav_home"
     )
     object Chords : BottomNavItem(
         route = Destination.ChordsLibraryScreen.route,
         icon = Icons.AutoMirrored.Filled.List,
-        labelRes = R.string.nav_chords
+        labelRes = R.string.nav_chords,
+        testTag = "bottom_nav_chords"
     )
     object Map : BottomNavItem(
         route = Destination.MapScreen.route,
         icon = Icons.Default.Place,
-        labelRes = R.string.nav_map
+        labelRes = R.string.nav_map,
+        testTag = "bottom_nav_map"
     )
 }
 
@@ -82,6 +87,7 @@ fun BottomBar(
                 val isSelected = currentRoute == item.route
 
                 NavigationBarItem(
+                    modifier = Modifier.testTag(item.testTag),
                     icon = {
                         Icon(
                             imageVector = item.icon,

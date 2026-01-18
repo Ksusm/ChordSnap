@@ -19,7 +19,6 @@ import cz.mendelu.pef.chordsnap.navigation.NavGraph
 import cz.mendelu.pef.chordsnap.ui.theme.ChordSnapTheme
 import cz.mendelu.pef.chordsnap.utils.LocaleHelper
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -32,15 +31,20 @@ class MainActivity : ComponentActivity() {
     override fun attachBaseContext(newBase: Context) {
         val preferences = UserPreferencesManager(newBase)
         val savedLanguage = runBlocking {
-            try {
-                preferences.languageFlow.first()
-            } catch (e: Exception) {
-                "en"
-            }
+            val storedLanguage = preferences.getStoredLanguage()
+            storedLanguage ?: getSystemLanguage(newBase)
         }
 
         val context = LocaleHelper.setLocale(newBase, savedLanguage)
         super.attachBaseContext(context)
+    }
+
+    private fun getSystemLanguage(context: Context): String {
+        val systemLocale = context.resources.configuration.locales[0]
+        return when (systemLocale.language) {
+            "cs" -> "cs"
+            else -> "en"
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,13 +54,10 @@ class MainActivity : ComponentActivity() {
 
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
 
-        // Změna: Skryjeme POUZE navigační lištu (tlačítka dole)
         windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars())
 
-        // Horní řádek (statusBars) necháme viditelný
         windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
 
-        // Chování při potažení zůstává stejné
         windowInsetsController.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 

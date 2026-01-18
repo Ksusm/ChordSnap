@@ -32,7 +32,6 @@ const val TestTagHomeSettingsButton = "TestTagHomeSettingsButton"
 const val TestTagHomeScanFab = "TestTagHomeScanFab"
 const val TestTagHomePracticesRow = "TestTagHomePracticesRow"
 const val TestTagHomeNoPracticesMessage = "TestTagHomeNoPracticesMessage"
-// Practice cards: testTag("practice_card_${practice.id}")
 
 @Composable
 fun HomeScreen(

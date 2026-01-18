@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,6 +35,12 @@ class UserPreferencesManager @Inject constructor(
         dataStore.edit { preferences ->
             preferences[LANGUAGE_KEY] = language
         }
+    }
+
+    // Get stored language without default value (returns null if not set)
+    suspend fun getStoredLanguage(): String? {
+        val preferences = dataStore.data.first()
+        return preferences[LANGUAGE_KEY]
     }
 
     // Theme

@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -20,6 +21,15 @@ import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.database.ChordEntity
 import cz.mendelu.pef.chordsnap.ui.components.BottomBar
 import cz.mendelu.pef.chordsnap.ui.theme.*
+
+// TEST TAGS
+const val TestTagChordsLibraryTitle = "TestTagChordsLibraryTitle"
+const val TestTagChordsLibrarySearchField = "TestTagChordsLibrarySearchField"
+const val TestTagChordsLibraryFilterButton = "TestTagChordsLibraryFilterButton"
+const val TestTagChordsLibraryDeleteButton = "TestTagChordsLibraryDeleteButton"
+const val TestTagChordsLibraryPracticeFab = "TestTagChordsLibraryPracticeFab"
+const val TestTagChordsLibraryLazyColumn = "TestTagChordsLibraryLazyColumn"
+const val TestTagChordsLibraryEmptyMessage = "TestTagChordsLibraryEmptyMessage"
 
 @Composable
 fun ChordsLibraryScreen(
@@ -58,7 +68,8 @@ fun ChordsLibraryScreen(
                     shape = CustomShapes.fab,
                     elevation = FloatingActionButtonDefaults.elevation(
                         defaultElevation = Dimensions.elevationFab
-                    )
+                    ),
+                    modifier = Modifier.testTag(TestTagChordsLibraryPracticeFab)
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = Dimensions.paddingLarge),
@@ -84,7 +95,6 @@ fun ChordsLibraryScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
         ) {
-            // Screen title centered at top
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -97,13 +107,17 @@ fun ChordsLibraryScreen(
                     text = stringResource(R.string.chords_library_title),
                     style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .testTag(TestTagChordsLibraryTitle)
                 )
 
                 if (selectedChords.isNotEmpty()) {
                     IconButton(
                         onClick = { viewModel.deleteSelectedChords() },
-                        modifier = Modifier.align(Alignment.CenterEnd)
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .testTag(TestTagChordsLibraryDeleteButton)
                     ) {
                         Icon(
                             Icons.Default.Delete,
@@ -137,7 +151,9 @@ fun ChordsLibraryScreen(
                 is ChordsLibraryUiState.Success -> {
                     if (state.chords.isEmpty()) {
                         Box(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .testTag(TestTagChordsLibraryEmptyMessage),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -148,7 +164,9 @@ fun ChordsLibraryScreen(
                         }
                     } else {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .testTag(TestTagChordsLibraryLazyColumn),
                             contentPadding = PaddingValues(Dimensions.screenHorizontalPadding),
                             verticalArrangement = Arrangement.spacedBy(Dimensions.cardSpacing)
                         ) {
@@ -202,7 +220,9 @@ fun SearchBarWithFilter(
         OutlinedTextField(
             value = query,
             onValueChange = onQueryChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(TestTagChordsLibrarySearchField),
             placeholder = {
                 Text(
                     text = stringResource(R.string.search_chords),
@@ -218,7 +238,10 @@ fun SearchBarWithFilter(
             },
             trailingIcon = {
                 Box {
-                    IconButton(onClick = { onFilterExpandChange(true) }) {
+                    IconButton(
+                        onClick = { onFilterExpandChange(true) },
+                        modifier = Modifier.testTag(TestTagChordsLibraryFilterButton)
+                    ) {
                         Icon(
                             Icons.Default.Menu,
                             contentDescription = stringResource(R.string.cd_filter),
@@ -278,7 +301,8 @@ fun ChordListItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onChordClick),
+            .clickable(onClick = onChordClick)
+            .testTag("chord_item_${chord.id}"),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -311,6 +335,7 @@ fun ChordListItem(
             Checkbox(
                 checked = isSelected,
                 onCheckedChange = onCheckboxChange,
+                modifier = Modifier.testTag("chord_checkbox_${chord.id}"),
                 colors = CheckboxDefaults.colors(
                     checkedColor = PrimaryPurple,
                     uncheckedColor = TextUnselected,
