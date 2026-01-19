@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,18 @@ import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.paddingLarge
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingMedium
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingSmall
 import kotlinx.coroutines.launch
+
+// TEST TAGS
+const val TestTagPracticeCreationTitle = "TestTagPracticeCreationTitle"
+const val TestTagPracticeCreationNameField = "TestTagPracticeCreationNameField"
+const val TestTagPracticeCreationSaveButton = "TestTagPracticeCreationSaveButton"
+const val TestTagPracticeCreationBackButton = "TestTagPracticeCreationBackButton"
+const val TestTagPracticeCreationAddFab = "TestTagPracticeCreationAddFab"
+const val TestTagPracticeCreationEmptyMessage = "TestTagPracticeCreationEmptyMessage"
+const val TestTagPracticeCreationLazyColumn = "TestTagPracticeCreationLazyColumn"
+const val TestTagPracticeCreationAddDialogTitle = "TestTagPracticeCreationAddDialogTitle"
+const val TestTagPracticeCreationSearchLabel = "TestTagPracticeCreationSearchLabel"
+const val TestTagPracticeCreationCancelButton = "TestTagPracticeCreationCancelButton"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,11 +67,15 @@ fun PracticeCreationScreen(
                         text = stringResource(R.string.practice_creation_title),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.testTag(TestTagPracticeCreationTitle)
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(
+                        onClick = onNavigateBack,
+                        modifier = Modifier.testTag(TestTagPracticeCreationBackButton)
+                    ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.cd_back),
@@ -74,7 +91,8 @@ fun PracticeCreationScreen(
                                     onSaved()
                                 }
                             }
-                        }
+                        },
+                        modifier = Modifier.testTag(TestTagPracticeCreationSaveButton)
                     ) {
                         Icon(
                             Icons.Default.Check,
@@ -97,7 +115,8 @@ fun PracticeCreationScreen(
                     shape = CustomShapes.fab,
                     elevation = FloatingActionButtonDefaults.elevation(
                         defaultElevation = elevationFab
-                    )
+                    ),
+                    modifier = Modifier.testTag(TestTagPracticeCreationAddFab)
                 ) {
                     Icon(
                         Icons.Default.Add,
@@ -128,7 +147,8 @@ fun PracticeCreationScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(paddingLarge),
+                    .padding(paddingLarge)
+                    .testTag(TestTagPracticeCreationNameField),
                 label = {
                     Text(
                         text = stringResource(R.string.practice_name),
@@ -167,7 +187,8 @@ fun PracticeCreationScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(paddingLarge),
+                                    .padding(paddingLarge)
+                                    .testTag(TestTagPracticeCreationEmptyMessage),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -179,7 +200,9 @@ fun PracticeCreationScreen(
                             }
                         } else {
                             LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .testTag(TestTagPracticeCreationLazyColumn),
                                 contentPadding = PaddingValues(paddingLarge),
                                 verticalArrangement = Arrangement.spacedBy(spacingMedium)
                             ) {
@@ -243,7 +266,9 @@ fun PracticeChordItem(
     onMoveDown: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("practice_chord_item_${chord.id}"),
         shape = CustomShapes.chordCard,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -286,7 +311,8 @@ fun PracticeChordItem(
             ) {
                 IconButton(
                     onClick = onMoveUp,
-                    enabled = !isFirst
+                    enabled = !isFirst,
+                    modifier = Modifier.testTag("move_up_${chord.id}")
                 ) {
                     Icon(
                         Icons.Default.ArrowUpward,
@@ -295,7 +321,10 @@ fun PracticeChordItem(
                     )
                 }
 
-                IconButton(onClick = onRemove) {
+                IconButton(
+                    onClick = onRemove,
+                    modifier = Modifier.testTag("remove_${chord.id}")
+                ) {
                     Icon(
                         Icons.Default.Delete,
                         contentDescription = stringResource(R.string.remove),
@@ -305,7 +334,8 @@ fun PracticeChordItem(
 
                 IconButton(
                     onClick = onMoveDown,
-                    enabled = !isLast
+                    enabled = !isLast,
+                    modifier = Modifier.testTag("move_down_${chord.id}")
                 ) {
                     Icon(
                         Icons.Default.ArrowDownward,
@@ -333,7 +363,8 @@ fun AddChordDialog(
         title = {
             Text(
                 text = stringResource(R.string.add_chord),
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.testTag(TestTagPracticeCreationAddDialogTitle)
             )
         },
         text = {
@@ -345,7 +376,9 @@ fun AddChordDialog(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { viewModel.updateSearchQuery(it) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(TestTagPracticeCreationSearchLabel),
                     label = { Text(stringResource(R.string.search_chords)) },
                     singleLine = true,
                     shape = CustomShapes.searchField,
@@ -416,7 +449,10 @@ fun AddChordDialog(
         },
         confirmButton = {},
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.testTag(TestTagPracticeCreationCancelButton)
+                ) {
                 Text(
                     text = stringResource(R.string.cancel),
                     color = PrimaryPurple,

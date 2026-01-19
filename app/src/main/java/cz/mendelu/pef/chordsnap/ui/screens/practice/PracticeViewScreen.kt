@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,6 +26,17 @@ import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingMedium
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingXSmall
 import kotlinx.coroutines.launch
 
+// TEST TAGS
+const val TestTagPracticeViewTitle = "TestTagPracticeViewTitle"
+const val TestTagPracticeViewBackButton = "TestTagPracticeViewBackButton"
+const val TestTagPracticeViewEditButton = "TestTagPracticeViewEditButton"
+const val TestTagPracticeViewDeleteButton = "TestTagPracticeViewDeleteButton"
+const val TestTagPracticeViewLazyColumn = "TestTagPracticeViewLazyColumn"
+const val TestTagPracticeViewError = "TestTagPracticeViewError"
+const val TestTagPracticeViewDeleteDialogTitle = "TestTagPracticeViewDeleteDialogTitle"
+const val TestTagPracticeViewDeleteDialogMessage = "TestTagPracticeViewDeleteDialogMessage"
+const val TestTagPracticeViewCancelButton = "TestTagPracticeViewCancelButton"
+const val TestTagPracticeViewConfirmButton = "TestTagPracticeViewConfirmButton"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PracticeViewScreen(
@@ -52,18 +64,23 @@ fun PracticeViewScreen(
                             text = state.practice.name,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.testTag(TestTagPracticeViewTitle)
                         )
                         else -> Text(
                             text = stringResource(R.string.practice_view_title),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.testTag(TestTagPracticeViewTitle)
                         )
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(
+                        onClick = onNavigateBack,
+                        modifier = Modifier.testTag(TestTagPracticeViewBackButton)
+                    ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.cd_back),
@@ -73,14 +90,20 @@ fun PracticeViewScreen(
                 },
                 actions = {
                     if (uiState is PracticeViewUiState.Success) {
-                        IconButton(onClick = { onNavigateToEdit(practiceId) }) {
+                        IconButton(
+                            onClick = { onNavigateToEdit(practiceId) },
+                            modifier = Modifier.testTag(TestTagPracticeViewEditButton)
+                        ) {
                             Icon(
                                 Icons.Default.Edit,
                                 contentDescription = stringResource(R.string.cd_edit),
                                 tint = AccentCyan
                             )
                         }
-                        IconButton(onClick = { showDeleteDialog = true }) {
+                        IconButton(
+                            onClick = { showDeleteDialog = true },
+                            modifier = Modifier.testTag(TestTagPracticeViewDeleteButton)
+                        ) {
                             Icon(
                                 Icons.Default.Delete,
                                 contentDescription = stringResource(R.string.cd_delete),
@@ -109,7 +132,9 @@ fun PracticeViewScreen(
                 }
                 is PracticeViewUiState.Success -> {
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .testTag(TestTagPracticeViewLazyColumn),
                         contentPadding = PaddingValues(paddingLarge),
                         verticalArrangement = Arrangement.spacedBy(spacingMedium)
                     ) {
@@ -129,7 +154,8 @@ fun PracticeViewScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(paddingLarge),
+                            .padding(paddingLarge)
+                            .testTag(TestTagPracticeViewError),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -150,11 +176,15 @@ fun PracticeViewScreen(
             title = {
                 Text(
                     text = stringResource(R.string.delete_practice_title),
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.testTag(TestTagPracticeViewDeleteDialogTitle)
                 )
             },
             text = {
-                Text(stringResource(R.string.delete_practice_message))
+                Text(
+                    text = stringResource(R.string.delete_practice_message),
+                    modifier = Modifier.testTag(TestTagPracticeViewDeleteDialogMessage)
+                )
             },
             confirmButton = {
                 TextButton(
@@ -164,7 +194,8 @@ fun PracticeViewScreen(
                             showDeleteDialog = false
                             onNavigateBack()
                         }
-                    }
+                    },
+                    modifier = Modifier.testTag(TestTagPracticeViewConfirmButton)
                 ) {
                     Text(
                         text = stringResource(R.string.delete),
@@ -174,7 +205,10 @@ fun PracticeViewScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
+                TextButton(
+                    onClick = { showDeleteDialog = false },
+                    modifier = Modifier.testTag(TestTagPracticeViewCancelButton)
+                    ) {
                     Text(
                         text = stringResource(R.string.cancel),
                         color = PrimaryPurple,
@@ -196,7 +230,9 @@ fun PracticeChordViewItem(
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("practice_view_chord_${chord.id}"),
         shape = CustomShapes.chordCard,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer

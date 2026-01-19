@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,20 @@ import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingMedium
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingSmall
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingXLarge
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingXSmall
+
+const val TestTagChordDetailTitle = "TestTagChordDetailTitle"
+const val TestTagChordDetailBackButton = "TestTagChordDetailBackButton"
+const val TestTagChordDetailLoading = "TestTagChordDetailLoading"
+const val TestTagChordDetailError = "TestTagChordDetailError"
+const val TestTagChordDetailContent = "TestTagChordDetailContent"
+const val TestTagChordDetailDiagramCard = "TestTagChordDetailDiagramCard"
+const val TestTagChordDetailNotesCard = "TestTagChordDetailNotesCard"
+const val TestTagChordDetailInfoCard = "TestTagChordDetailInfoCard"
+const val TestTagChordDetailDiagramTitle = "TestTagChordDetailDiagramTitle"
+const val TestTagChordDetailNotesTitle = "TestTagChordDetailNotesTitle"
+const val TestTagChordDetailInfoTitle = "TestTagChordDetailInfoTitle"
+const val TestTagChordDetailChordTypeLabel = "TestTagChordDetailChordTypeLabel"
+const val TestTagChordDetailBaseNoteLabel = "TestTagChordDetailBaseNoteLabel"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,11 +69,15 @@ fun ChordDetailScreen(
                         },
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.testTag(TestTagChordDetailTitle)
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(
+                        onClick = onNavigateBack,
+                        modifier = Modifier.testTag(TestTagChordDetailBackButton)
+                    ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.cd_back),
@@ -80,7 +99,9 @@ fun ChordDetailScreen(
             when (val state = uiState) {
                 is ChordDetailUiState.Loading -> {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .testTag(TestTagChordDetailLoading),
                         color = PrimaryPurple
                     )
                 }
@@ -91,7 +112,8 @@ fun ChordDetailScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(paddingLarge),
+                            .padding(paddingLarge)
+                            .testTag(TestTagChordDetailError),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -113,12 +135,15 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(paddingLarge),
+            .padding(paddingLarge)
+            .testTag(TestTagChordDetailContent),
         verticalArrangement = Arrangement.spacedBy(spacingXLarge)
     ) {
         // Chord Diagram Card
         Card(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(TestTagChordDetailDiagramCard),
             shape = CustomShapes.chordCard,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -138,7 +163,8 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
                     text = stringResource(R.string.chord_diagram),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.testTag(TestTagChordDetailDiagramTitle)
                 )
 
                 AsyncImage(
@@ -154,7 +180,9 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
 
         // Notes in Chord Card
         Card(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(TestTagChordDetailNotesCard),
             shape = CustomShapes.chordCard,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -173,7 +201,8 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
                     text = stringResource(R.string.notes_in_chord),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.testTag(TestTagChordDetailNotesTitle)
                 )
 
                 // Notes with gradient badges
@@ -205,7 +234,9 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
 
         // Chord Information Card
         Card(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(TestTagChordDetailInfoCard),
             shape = CustomShapes.chordCard,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -224,7 +255,8 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
                     text = stringResource(R.string.chord_information),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.testTag(TestTagChordDetailInfoTitle)
                 )
 
                 Row(
@@ -236,7 +268,8 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
                         Text(
                             text = stringResource(R.string.chord_type),
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.testTag(TestTagChordDetailChordTypeLabel)
                         )
                         Spacer(modifier = Modifier.height(spacingXSmall))
                         Text(
@@ -254,7 +287,8 @@ fun ChordDetailContent(state: ChordDetailUiState.Success) {
                         Text(
                             text = stringResource(R.string.base_note),
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.testTag(TestTagChordDetailBaseNoteLabel)
                         )
                         Spacer(modifier = Modifier.height(spacingXSmall))
                         Text(
