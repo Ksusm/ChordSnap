@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,6 +24,19 @@ import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingMedium
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingSmall
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingXSmall
 import kotlinx.coroutines.launch
+
+const val TestTagSettingsTitle = "TestTagSettingsTitle"
+const val TestTagSettingsBackButton = "TestTagSettingsBackButton"
+const val TestTagSettingsLanguageItem = "TestTagSettingsLanguageItem"
+const val TestTagSettingsThemeItem = "TestTagSettingsThemeItem"
+const val TestTagSettingsLanguageDialog = "TestTagSettingsLanguageDialog"
+const val TestTagSettingsThemeDialog = "TestTagSettingsThemeDialog"
+const val TestTagSettingsLanguageEnglish = "TestTagSettingsLanguageEnglish"
+const val TestTagSettingsLanguageCzech = "TestTagSettingsLanguageCzech"
+const val TestTagSettingsThemeLight = "TestTagSettingsThemeLight"
+const val TestTagSettingsThemeDark = "TestTagSettingsThemeDark"
+const val TestTagSettingsThemeSystem = "TestTagSettingsThemeSystem"
+const val TestTagSettingsCancelButton = "TestTagSettingsCancelButton"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,11 +59,15 @@ fun SettingsScreen(
                     Text(
                         text = stringResource(R.string.settings_title),
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.testTag(TestTagSettingsTitle)
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(
+                        onClick = onNavigateBack,
+                        modifier = Modifier.testTag(TestTagSettingsBackButton)
+                    ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.cd_back),
@@ -77,7 +95,8 @@ fun SettingsScreen(
                     "cs" -> stringResource(R.string.settings_language_czech)
                     else -> stringResource(R.string.settings_language_english)
                 },
-                onClick = { showLanguageDialog = true }
+                onClick = { showLanguageDialog = true },
+                modifier = Modifier.testTag(TestTagSettingsLanguageItem)
             )
 
             HorizontalDivider(
@@ -94,7 +113,8 @@ fun SettingsScreen(
                     "system" -> stringResource(R.string.settings_theme_system)
                     else -> stringResource(R.string.settings_theme_system)
                 },
-                onClick = { showThemeDialog = true }
+                onClick = { showThemeDialog = true },
+                modifier = Modifier.testTag(TestTagSettingsThemeItem)
             )
 
             HorizontalDivider(
@@ -174,7 +194,8 @@ fun SettingsScreen(
             },
             text = {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(spacingSmall)
+                    verticalArrangement = Arrangement.spacedBy(spacingSmall),
+                    modifier = Modifier.testTag(TestTagSettingsLanguageDialog)
                 ) {
                     LanguageOption(
                         language = stringResource(R.string.settings_language_english),
@@ -186,7 +207,8 @@ fun SettingsScreen(
                                 showLanguageDialog = false
                                 (context as? ComponentActivity)?.recreate()
                             }
-                        }
+                        },
+                        modifier = Modifier.testTag(TestTagSettingsLanguageEnglish)
                     )
                     LanguageOption(
                         language = stringResource(R.string.settings_language_czech),
@@ -198,13 +220,17 @@ fun SettingsScreen(
                                 showLanguageDialog = false
                                 (context as? ComponentActivity)?.recreate()
                             }
-                        }
+                        },
+                        modifier = Modifier.testTag(TestTagSettingsLanguageCzech)
                     )
                 }
             },
             confirmButton = {},
             dismissButton = {
-                TextButton(onClick = { showLanguageDialog = false }) {
+                TextButton(
+                    onClick = { showLanguageDialog = false },
+                    modifier = Modifier.testTag(TestTagSettingsCancelButton)
+                ) {
                     Text(
                         text = stringResource(R.string.cancel),
                         color = PrimaryPurple,
@@ -228,7 +254,8 @@ fun SettingsScreen(
             },
             text = {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(spacingSmall)
+                    verticalArrangement = Arrangement.spacedBy(spacingSmall),
+                    modifier = Modifier.testTag(TestTagSettingsThemeDialog)
                 ) {
                     ThemeOption(
                         theme = stringResource(R.string.settings_theme_light),
@@ -236,7 +263,8 @@ fun SettingsScreen(
                         onClick = {
                             viewModel.setTheme("light")
                             showThemeDialog = false
-                        }
+                        },
+                        modifier = Modifier.testTag(TestTagSettingsThemeLight)
                     )
                     ThemeOption(
                         theme = stringResource(R.string.settings_theme_dark),
@@ -244,7 +272,8 @@ fun SettingsScreen(
                         onClick = {
                             viewModel.setTheme("dark")
                             showThemeDialog = false
-                        }
+                        },
+                        modifier = Modifier.testTag(TestTagSettingsThemeDark)
                     )
                     ThemeOption(
                         theme = stringResource(R.string.settings_theme_system),
@@ -252,13 +281,17 @@ fun SettingsScreen(
                         onClick = {
                             viewModel.setTheme("system")
                             showThemeDialog = false
-                        }
+                        },
+                        modifier = Modifier.testTag(TestTagSettingsThemeSystem)
                     )
                 }
             },
             confirmButton = {},
             dismissButton = {
-                TextButton(onClick = { showThemeDialog = false }) {
+                TextButton(
+                    onClick = { showThemeDialog = false },
+                    modifier = Modifier.testTag(TestTagSettingsCancelButton)
+                ) {
                     Text(
                         text = stringResource(R.string.cancel),
                         color = PrimaryPurple,
@@ -289,11 +322,12 @@ fun SettingsSectionTitle(title: String) {
 fun SettingsItem(
     title: String,
     subtitle: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Surface(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.background
     ) {
         Row(
@@ -327,11 +361,12 @@ fun SettingsItem(
 fun LanguageOption(
     language: String,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = CustomShapes.chordCard,
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
@@ -368,11 +403,12 @@ fun LanguageOption(
 fun ThemeOption(
     theme: String,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = CustomShapes.chordCard,
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer

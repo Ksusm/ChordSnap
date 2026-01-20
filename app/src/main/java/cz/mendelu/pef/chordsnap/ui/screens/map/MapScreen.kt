@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +39,12 @@ import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingMedium
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingSmall
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.spacingXSmall
 
+const val TestTagMapTitle = "TestTagMapTitle"
+const val TestTagMapLegendButton = "TestTagMapLegendButton"
+const val TestTagMapLegendCard = "TestTagMapLegendCard"
+const val TestTagMapLegendClose = "TestTagMapLegendClose"
+const val TestTagMapContent = "TestTagMapContent"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
@@ -58,11 +65,15 @@ fun MapScreen(
                     Text(
                         text = stringResource(R.string.map_title),
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.testTag(TestTagMapTitle)
                     )
                 },
                 actions = {
-                    IconButton(onClick = { showLegend = !showLegend }) {
+                    IconButton(
+                        onClick = { showLegend = !showLegend },
+                        modifier = Modifier.testTag(TestTagMapLegendButton)
+                    ) {
                         Icon(
                             Icons.Default.Info,
                             contentDescription = stringResource(R.string.show_legend),
@@ -120,7 +131,7 @@ fun MapLegend(
     onDismiss: () -> Unit
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.testTag(TestTagMapLegendCard),
         shape = CustomShapes.chordCard,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -146,7 +157,9 @@ fun MapLegend(
                 )
                 IconButton(
                     onClick = onDismiss,
-                    modifier = Modifier.size(iconSizeMedium)
+                    modifier = Modifier
+                        .size(iconSizeMedium)
+                        .testTag(TestTagMapLegendClose)
                 ) {
                     Icon(
                         Icons.Default.Close,
@@ -210,7 +223,9 @@ fun MapContent(
     }
 
     GoogleMap(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag(TestTagMapContent),
         cameraPositionState = cameraPositionState,
         properties = MapProperties(
             isMyLocationEnabled = false
