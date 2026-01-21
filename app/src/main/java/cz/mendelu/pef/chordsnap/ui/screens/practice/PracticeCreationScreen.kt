@@ -20,7 +20,7 @@ import coil.compose.AsyncImage
 import cz.mendelu.pef.chordsnap.R
 import cz.mendelu.pef.chordsnap.database.ChordEntity
 import cz.mendelu.pef.chordsnap.ui.theme.*
-import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.chordDiagramSmall
+import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.chordDiagramLarge
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.elevationFab
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.elevationMedium
 import cz.mendelu.pef.chordsnap.ui.theme.Dimensions.paddingLarge
@@ -294,7 +294,7 @@ fun PracticeChordItem(
             AsyncImage(
                 model = chord.imageUrl,
                 contentDescription = stringResource(R.string.cd_chord_diagram, chord.nameEng),
-                modifier = Modifier.size(chordDiagramSmall),
+                modifier = Modifier.size(chordDiagramLarge),
                 contentScale = ContentScale.Fit
             )
 

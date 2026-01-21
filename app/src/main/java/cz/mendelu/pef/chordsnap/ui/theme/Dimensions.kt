@@ -34,10 +34,8 @@ object Dimensions {
     val iconSizeMedium = 24.dp
 
     val bottomBarHeight = 80.dp
-
-    val chordDiagramSmall = 60.dp
     val chordDiagramMedium = 80.dp
-    val chordDiagramLarge = 100.dp
+    val chordDiagramLarge = 140.dp
     val chordDiagramDetail = 300.dp
 
     val practiceCardWidth = 140.dp
