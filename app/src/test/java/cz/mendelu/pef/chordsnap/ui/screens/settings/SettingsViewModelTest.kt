@@ -56,7 +56,15 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setLanguage calls preferences manager`() = runTest {
+    fun `setTheme calls preferences manager`() = runTest {
+        viewModel.setTheme("dark")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { preferencesManager.setTheme("dark") }
+    }
+
+    @Test
+    fun `setLanguage with Czech updates preference`() = runTest {
         viewModel.setLanguage("cs")
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -64,10 +72,10 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setTheme calls preferences manager`() = runTest {
-        viewModel.setTheme("dark")
+    fun `setTheme with light mode updates preference`() = runTest {
+        viewModel.setTheme("light")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        coVerify { preferencesManager.setTheme("dark") }
+        coVerify { preferencesManager.setTheme("light") }
     }
 }

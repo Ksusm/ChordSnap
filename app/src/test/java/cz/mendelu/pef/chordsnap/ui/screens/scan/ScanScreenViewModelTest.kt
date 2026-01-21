@@ -41,6 +41,30 @@ class ScanScreenViewModelTest {
             notes = listOf("G", "Bb", "D"),
             name = ChordName("G minor", "Sol menor"),
             images = ChordImages("url2")
+        ),
+        Chord(
+            id = "3",
+            noteId = "C",
+            typeId = "minor",
+            notes = listOf("C", "Eb", "G"),
+            name = ChordName("C minor", "Do menor"),
+            images = ChordImages("url3")
+        ),
+        Chord(
+            id = "4",
+            noteId = "Db",
+            typeId = "major",
+            notes = listOf("Db", "F", "Ab"),
+            name = ChordName("Db major", "Reb mayor"),
+            images = ChordImages("url4")
+        ),
+        Chord(
+            id = "5",
+            noteId = "C#",
+            typeId = "major",
+            notes = listOf("C#", "E#", "G#"),
+            name = ChordName("C# major", "Do# mayor"),
+            images = ChordImages("url5")
         )
     )
 
@@ -93,7 +117,7 @@ class ScanScreenViewModelTest {
     }
 
     @Test
-    fun `searchChordByName normalizes Cm to C minor`() = runTest {
+    fun `searchChordByName normalizes Gm to G minor`() = runTest {
         viewModel.searchChordByName("Gm")
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -129,5 +153,59 @@ class ScanScreenViewModelTest {
 
         val state = viewModel.uiState.value
         assertTrue(state is ScanUiState.Idle)
+    }
+
+    @Test
+    fun `searchChordByName handles sharp notation`() = runTest {
+        viewModel.searchChordByName("C#")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state is ScanUiState.Success)
+        assertEquals("C# major", (state as ScanUiState.Success).chord.name.eng)
+    }
+
+    @Test
+    fun `searchChordByName handles flat notation`() = runTest {
+        viewModel.searchChordByName("Db")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state is ScanUiState.Success)
+        assertEquals("Db major", (state as ScanUiState.Success).chord.name.eng)
+    }
+
+    @Test
+    fun `searchChordByName normalizes CM to C major`() = runTest {
+        viewModel.searchChordByName("CM")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state is ScanUiState.Success)
+        assertEquals("C major", (state as ScanUiState.Success).chord.name.eng)
+    }
+
+    @Test
+    fun `searchChordByName handles case insensitive search`() = runTest {
+        viewModel.searchChordByName("c MAJOR")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state is ScanUiState.Success)
+        assertEquals("C major", (state as ScanUiState.Success).chord.name.eng)
+    }
+
+    @Test
+    fun `searchChordByName returns error when database not loaded`() = runTest {
+        coEvery { repository.getAllChords() } returns CommunicationResult.Success(emptyList())
+        val newViewModel = ScanScreenViewModel(repository, chordDao)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        newViewModel.searchChordByName("C major")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = newViewModel.uiState.value
+        assertTrue(state is ScanUiState.Error)
+        assertEquals(R.string.scan_database_not_loaded, (state as ScanUiState.Error).messageResId)
     }
 }

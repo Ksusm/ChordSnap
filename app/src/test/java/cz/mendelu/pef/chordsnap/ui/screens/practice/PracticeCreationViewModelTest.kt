@@ -15,6 +15,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -164,5 +165,53 @@ class PracticeCreationViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify { practiceDao.updatePractice(any()) }
+    }
+
+    @Test
+    fun `loadPractice with empty chord list creates empty practice`() = runTest {
+        viewModel.loadPractice(null, emptyList())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state is PracticeCreationUiState.Success)
+        assertEquals(0, (state as PracticeCreationUiState.Success).chords.size)
+    }
+
+    @Test
+    fun `addChord does not add duplicate chord`() = runTest {
+        viewModel.loadPractice(null, listOf("1"))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.addChord("1", testChords[0])
+
+        val state = viewModel.uiState.value
+        assertTrue(state is PracticeCreationUiState.Success)
+        assertEquals(1, (state as PracticeCreationUiState.Success).chords.size)
+    }
+
+    @Test
+    fun `moveChordUp at first position does nothing`() = runTest {
+        viewModel.loadPractice(null, listOf("1", "2"))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.moveChordUp(0)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state is PracticeCreationUiState.Success)
+        assertEquals("1", (state as PracticeCreationUiState.Success).chords[0].id)
+    }
+
+    @Test
+    fun `moveChordDown at last position does nothing`() = runTest {
+        viewModel.loadPractice(null, listOf("1", "2"))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.moveChordDown(1)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state is PracticeCreationUiState.Success)
+        assertEquals("2", (state as PracticeCreationUiState.Success).chords[1].id)
     }
 }

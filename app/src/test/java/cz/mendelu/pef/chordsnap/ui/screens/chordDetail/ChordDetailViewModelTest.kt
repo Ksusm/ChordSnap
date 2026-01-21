@@ -1,5 +1,6 @@
 package cz.mendelu.pef.chordsnap.ui.screens.chorddetail
 
+import cz.mendelu.pef.chordsnap.communication.CommunicationError
 import cz.mendelu.pef.chordsnap.communication.CommunicationResult
 import cz.mendelu.pef.chordsnap.communication.IChordsRemoteRepository
 import cz.mendelu.pef.chordsnap.models.*
@@ -12,6 +13,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -97,7 +100,7 @@ class ChordDetailViewModelTest {
     @Test
     fun `loadChord loads chord even when types fail`() = runTest {
         coEvery { repository.getChordTypes() } returns CommunicationResult.Error(
-            cz.mendelu.pef.chordsnap.communication.CommunicationError(500)
+            CommunicationError(500)
         )
 
         viewModel.loadChord("1")
@@ -106,6 +109,21 @@ class ChordDetailViewModelTest {
         val state = viewModel.uiState.value
         assertTrue(state is ChordDetailUiState.Success)
         assertEquals("C major", (state as ChordDetailUiState.Success).chord.name.eng)
-        assertEquals(null, state.chordType)
+        assertNull(state.chordType)
+    }
+
+    @Test
+    fun `loadChord loads chord even when notes fail`() = runTest {
+        coEvery { repository.getAllNotes() } returns CommunicationResult.Error(
+            CommunicationError(500)
+        )
+
+        viewModel.loadChord("1")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state is ChordDetailUiState.Success)
+        assertEquals("C major", (state as ChordDetailUiState.Success).chord.name.eng)
+        assertNull(state.baseNote)
     }
 }

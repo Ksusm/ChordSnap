@@ -68,4 +68,19 @@ class HomeScreenViewModelTest {
             assertEquals(0, (state as HomeScreenUiState.Success).practices.size)
         }
     }
+
+    @Test
+    fun `uiState maintains practice order from DAO`() = runTest {
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.uiState.test {
+            val item = awaitItem()
+            val state = if (item is HomeScreenUiState.Loading) awaitItem() else item
+
+            assertTrue(state is HomeScreenUiState.Success)
+            val practices = (state as HomeScreenUiState.Success).practices
+            assertEquals("Strumming basics", practices[0].name)
+            assertEquals("Moon river", practices[1].name)
+        }
+    }
 }
