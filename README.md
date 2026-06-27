@@ -1,5 +1,7 @@
 # xkuznet4
 
+# Server URL
+server=https://raw.githubusercontent.com/
 
 ## GitHub Token
 
